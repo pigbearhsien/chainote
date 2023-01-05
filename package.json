@@ -1,0 +1,11 @@
+{
+  "name": "ChainNoteWeb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tsailawrence/ChainNoteWeb.git",
+  "author": "Lawrence Tsai <tsailawrence812@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "cd frontend && yarn start"
+  }
+}
