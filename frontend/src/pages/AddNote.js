@@ -31,14 +31,25 @@ function AddNote() {
       >
         <h1>Add Note</h1>
         <TextArea
-          rows={20}
+          rows={15}
           style={{
             backgroundColor: "black",
             color: "white",
             borderColor: "white",
-            boxShadow: "0 0 0 2px #828384",
+            fontSize: "18px",
+            fontFamily: "Iceberg",
+            // boxShadow: "0 0 0 2px #828384",
           }}
         />
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "14px",
+            width: "100%",
+          }}
+        >
+          Add
+        </Button>
       </Content>
     </Layout>
   );

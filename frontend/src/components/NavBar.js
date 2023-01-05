@@ -61,7 +61,7 @@ function NavBar() {
           style={{
             display: "flex",
             justifyContent: "Center",
-            height: 100,
+            height: 130,
             marginTop: 50,
             marginBottom: 20,
           }}
