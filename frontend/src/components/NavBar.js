@@ -1,70 +1,156 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import React, { useEffect } from "react";
+import {
+  UserOutlined,
+  MessageOutlined,
+  TransactionOutlined,
+  CoffeeOutlined,
+  SolutionOutlined,
+  UserDeleteOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu } from "antd";
+import { useNavigate } from "react-router-dom";
+// import logo from "../img/LogoTitle.png";
 
-const drawerWidth = 240;
+const { Sider } = Layout;
 
-export default function NavBar() {
+function NavBar({ collapsed }) {
+  //   const navigate = useNavigate();
+
+  //   function navigatePage(key) {
+  //     setKey(key);
+  //     switch (key) {
+  //       case "2":
+  //         navigate("/mytasks");
+  //         break;
+  //       case "3":
+  //         navigate("/chat");
+  //         break;
+  //       case "4":
+  //         navigate("/transfer");
+  //         break;
+  //       case "5":
+  //         navigate("/account");
+  //         break;
+  //       case "6":
+  //         //Logout
+  //         localStorage.setItem(LOCALSTORAGE_STATUS, "logout");
+  //         navigate("/login");
+  //         setStatus({
+  //           type: "success",
+  //           msg: "Logout successfully!",
+  //         });
+  //         break;
+  //       default:
+  //         navigate("/");
+  //     }
+  //   }
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
+    <>
+      <Sider
+        width={250}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{
+          overflow: "auto",
+          position: "-webkit-sticky",
+          position: "sticky",
+          height: "100vh",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          marginLeft: "10%",
+          borderRadius: 20,
+          backgroundColor: "#f5f5f5",
+          marginRight: "2%",
         }}
-        variant="permanent"
-        anchor="left"
       >
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-      >
-        <Toolbar />
-      </Box>
-    </Box>
+        <div
+          className="logo"
+          style={{
+            display: "flex",
+            justifyContent: "Center",
+            height: 100,
+            margin: 10,
+          }}
+        >
+          {/* <img src={logo}></img> */}
+        </div>
+        <Menu
+          className="tabBar"
+          style={{
+            background: "#f5f5f5",
+          }}
+          mode="inline"
+          //   selectedKeys={[key]}
+          //   onClick={(e) => navigatePage(e.key)}
+          items={[
+            {
+              key: "1",
+              icon: <CoffeeOutlined />,
+              label: "BuyMe",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "2",
+              icon: <SolutionOutlined />,
+              label: "MyTasks",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "3",
+              icon: <MessageOutlined />,
+              label: "Chat",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "4",
+              icon: <TransactionOutlined />,
+              label: "Transfer",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "5",
+              icon: <UserOutlined />,
+              label: "Account",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "6",
+              icon: <UserDeleteOutlined />,
+              label: "Log Out",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+          ]}
+        ></Menu>
+      </Sider>
+    </>
   );
 }
+
+export default NavBar;
