@@ -9,7 +9,7 @@ import {
 import { Layout, Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../UseApp";
-import logo from "../img/LogoTitle.png";
+import logo from "../img/ChainNote_white.png";
 
 const { Sider } = Layout;
 
@@ -62,7 +62,8 @@ function NavBar() {
             display: "flex",
             justifyContent: "Center",
             height: 100,
-            margin: 10,
+            marginTop: 50,
+            marginBottom: 20,
           }}
         >
           <img src={logo}></img>

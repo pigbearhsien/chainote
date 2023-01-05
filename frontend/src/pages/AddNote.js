@@ -7,6 +7,8 @@ import {
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { useApp } from "../UseApp";
+import { Input } from "antd";
+const { TextArea } = Input;
 
 const { Header, Content } = Layout;
 
@@ -28,6 +30,15 @@ function AddNote() {
         }}
       >
         <h1>Add Note</h1>
+        <TextArea
+          rows={20}
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            borderColor: "white",
+            boxShadow: "0 0 0 2px #828384",
+          }}
+        />
       </Content>
     </Layout>
   );
