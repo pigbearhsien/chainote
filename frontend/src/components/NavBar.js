@@ -61,8 +61,9 @@ function NavBar() {
           style={{
             display: "flex",
             justifyContent: "Center",
-            height: 100,
-            margin: 10,
+            height: 130,
+            marginTop: 50,
+            marginBottom: 20,
           }}
         >
           <img src={logo}></img>
