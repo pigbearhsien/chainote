@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
-// import Login from "./pages/Login";
+import Login from "./pages/Login";
 // import Chat from "./pages/Chat";
 // import Transfer from "./pages/Transfer";
 // import Account from "./pages/Account";
@@ -14,7 +14,10 @@ import { Layout } from "antd";
 import { useEffect } from "react";
 
 function App() {
-  // const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(false);
+  if (login) {
+    return;
+  }
   // const { pathname } = useLocation();
   // const { me, id, setStatus, client, key, setKey } = useApp();
 
