@@ -111,23 +111,7 @@ textarea:hover {
   box-shadow: 0 0 0 2px white;
 }
 .ant-input:hover {
-  border-color: #dba083;
-}
-.ant-input-number-affix-wrapper:not(
-    :where(
-        .css-dev-only-do-not-override-1l14yfp
-      ).ant-input-number-affix-wrapper-disabled
-  ):hover {
-  border-color: #dba083;
-  outline: 0;
-  -webkit-box-shadow: 0 0 0 2px #dba083;
-  box-shadow: 0 0 0 2px #ffdaab;
-}
-.ant-input-number-affix-wrapper-focused {
-  border-color: #dba083;
-  outline: 0;
-  -webkit-box-shadow: 0 0 0 2px #dba083;
-  box-shadow: 0 0 0 2px #ffdaab;
+  border-color: gray;
 }
 
 .ant-picker-input:focus {

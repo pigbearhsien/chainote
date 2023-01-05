@@ -7,6 +7,8 @@ import {
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { useApp } from "../UseApp";
+import { Input } from "antd";
+const { TextArea } = Input;
 
 const { Header, Content } = Layout;
 
