@@ -1,13 +1,199 @@
-body {
+*,
+html {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-family: "Iceberg";
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.site-layout .site-layout-background {
+  background: black;
+  border: 1px solid white;
+}
+
+.ant-layout {
+  background-color: black;
+}
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-inline-end: 0;
+}
+
+.loginFormContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-menu-item-active {
+  background-color: white !important;
+}
+
+.ant-menu-item-selected {
+  background-color: white !important;
+}
+.ant-menu-light .ant-menu-item-selected {
+  color: black;
+}
+
+.ant-btn-primary {
+  background-color: #ffdaab !important;
+  color: black;
+}
+
+.ant-btn:hover {
+  color: #dba083 !important;
+  border-color: #dba083 !important;
+}
+
+h1 {
+  margin-bottom: 10px;
+  color: white;
+}
+
+.title {
+  font-family: "Pacifico";
+}
+
+.ant-typography {
+  color: #dba083 !important;
+}
+
+.ant-dropdown-menu-item-selected {
+  color: black !important;
+  background-color: #ffdaab !important;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #dba083 !important;
+}
+.ant-tabs-tab-btn:active {
+  color: #f1a48f !important;
+}
+.ant-tabs-tab:hover {
+  color: #f1a48f !important;
+}
+
+.ant-tabs-ink-bar {
+  background: #dba083 !important;
+}
+
+.ant-checkbox-inner {
+  background: #dba083 !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #dba083 !important;
+}
+
+.ant-input:focus {
+  border-color: #dba083;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px #dba083;
+  box-shadow: 0 0 0 2px #ffdaab;
+}
+.ant-input:hover {
+  border-color: #dba083;
+}
+.ant-input-number-affix-wrapper:not(
+    :where(
+        .css-dev-only-do-not-override-1l14yfp
+      ).ant-input-number-affix-wrapper-disabled
+  ):hover {
+  border-color: #dba083;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px #dba083;
+  box-shadow: 0 0 0 2px #ffdaab;
+}
+.ant-input-number-affix-wrapper-focused {
+  border-color: #dba083;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px #dba083;
+  box-shadow: 0 0 0 2px #ffdaab;
+}
+
+.ant-picker-input:focus {
+  border-color: #dba083;
+}
+.ant-picker:hover {
+  border-color: #dba083;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px #dba083;
+  box-shadow: 0 0 0 2px #ffdaab;
+}
+.ant-picker-focused {
+  border-color: #dba083;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px #dba083;
+  box-shadow: 0 0 0 2px #ffdaab;
+}
+.ant-input:hover {
+  border-color: #dba083;
+}
+.ant-input[class="password"]:hover {
+  border-color: #dba083;
+}
+a:hover {
+  color: #ffdaab;
+}
+a {
+  color: #dba083;
+}
+.ant-picker-dropdown
+  .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-today)
+  .ant-picker-cell-inner::before {
+  border-color: #dba083;
+}
+.ant-picker-dropdown
+  .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-selected)
+  .ant-picker-cell-inner {
+  background-color: #dba083;
+}
+
+.ant-picker-dropdown
+  .ant-picker-time-panel-column
+  > li.ant-picker-time-panel-cell-selected
+  .ant-picker-time-panel-cell-inner {
+  background-color: #ffdaab;
+}
+.ant-picker-dropdown
+  .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-selected)
+  .ant-picker-cell-inner {
+  background-color: #dba083;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: #dba083;
+  outline: 0;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  border-color: #dba083;
+  color: #dba083;
+}
+.ant-pagination .ant-pagination-item-active:hover {
+  border-color: #dba083;
+  color: #dba083;
+}
+.ant-pagination .ant-pagination-item-active:hover a {
+  border-color: #dba083;
+  color: #dba083;
+}
+
+.ant-input-search .ant-input:focus {
+  border-color: #dba083;
+}
+.ant-input-search .ant-input:hover {
+  border-color: #dba083;
 }
