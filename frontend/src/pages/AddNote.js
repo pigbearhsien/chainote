@@ -60,35 +60,44 @@ function AddNote() {
           //   filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2))",
         }}
       >
-        <h1>Today is: {pickDate}</h1>
-        <div className="pickDate">
-          <Space direction="vertical">
-            <DatePicker
-              format="YYYY-MM-DD"
-              disabledDate={disabledDate}
-              allowClear={false}
-              showToday={true}
-              onChange={onChange}
-            />
-          </Space>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <h1 style={{ marginBottom: 0 }}>The date you pick is: {pickDate}</h1>
+          <div className="pickDate" style={{}}>
+            <Space direction="vertical">
+              <DatePicker
+                format="YYYY-MM-DD"
+                disabledDate={disabledDate}
+                allowClear={false}
+                showToday={true}
+                onChange={onChange}
+              />
+            </Space>
+          </div>
         </div>
-        <br></br>
 
         <TextArea
-          rows={13}
+          //   rows={14}
           style={{
             backgroundColor: "black",
             color: "white",
             borderColor: "white",
             fontSize: "18px",
             fontFamily: "Iceberg",
+            height: "80%",
             // boxShadow: "0 0 0 2px #828384",
           }}
         />
         <Button
           style={{
             borderRadius: "50px",
-            marginTop: "14px",
+            marginTop: "5%",
             width: "100%",
           }}
         >

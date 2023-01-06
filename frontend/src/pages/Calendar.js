@@ -1,12 +1,11 @@
 import React from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
-import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { Layout } from "antd";
 import { useApp } from "../UseApp";
+
+dayjs.extend(customParseFormat);
 
 const { Header, Content } = Layout;
 
