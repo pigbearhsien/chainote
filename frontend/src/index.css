@@ -146,10 +146,14 @@ a {
   .ant-picker-cell-inner::before {
   border-color: white;
 }
+
 .ant-picker-dropdown
   .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-selected)
   .ant-picker-cell-inner {
   background-color: white;
+}
+.ant-picker-dropdown .ant-picker-today-btn:hover {
+  color: gray;
 }
 
 .ant-picker-dropdown
