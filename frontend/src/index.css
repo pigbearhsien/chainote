@@ -202,3 +202,9 @@ a {
 .ant-input-search .ant-input:hover {
   border-color: #dba083;
 }
+.ant-upload-wrapper {
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+}

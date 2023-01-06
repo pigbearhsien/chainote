@@ -4,11 +4,12 @@ import { Buffer } from "buffer";
 import { base64converter } from "./utils";
 import * as pj from "pem-jwk";
 import { assert } from "console";
+import { mnemonicPhrase } from "./utils";
 
 class ArweaveInterface {
-  constructor({ recoveryPhrase }) {
+  constructor() {
     this.arweave = Arweave.init({});
-    this.mnemonicPhrase = JSON.parse(recoveryPhrase);
+    this.mnemonicPhrase = mnemonicPhrase;
   }
 
   generateArweaveWallet = async () => {
@@ -86,7 +87,7 @@ class ArweaveInterface {
     return encrypted.toString("base64");
   };
 
-  static encryptByPrivateKey = async (plainText, privateKey) => {
+  encryptByPrivateKey = async (plainText) => {
     /*
         static encrypt 有些錯誤，不能直接吃公鑰，
         這個 function 可以幫助私鑰轉成公鑰，同時進行加密。
@@ -100,7 +101,8 @@ class ArweaveInterface {
                                   = 470 bytes
     */
 
-    const privateKey_ = pj.jwk2pem(privateKey);
+    console.log(this.mnemonicPhrase);
+    const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
 
     let result = "";
     for (let i = 0; i < plainText.length; i += 150) {
@@ -125,8 +127,8 @@ class ArweaveInterface {
     return result;
   };
 
-  static decryptByPrivateKey = async (cipherText, privateKey) => {
-    const privateKey_ = pj.jwk2pem(privateKey);
+  decryptByPrivateKey = async (cipherText) => {
+    const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
 
     let start = 0;
     let result = "";
@@ -154,28 +156,23 @@ class ArweaveInterface {
     return result;
   };
 
-  uploadOntoChain = async (encrypted, key) => {
-    console.log("1");
+  uploadOntoChain = async (encrypted) => {
     const transaction = await this.arweave.createTransaction(
       {
         data: Buffer.from(encrypted, "base64"),
       },
-      key
+      this.mnemonicPhrase
     );
 
-    console.log("2", transaction);
+    // console.log(transaction);
 
-    await this.arweave.transactions.sign(transaction, key);
-
-    console.log(transaction);
+    await this.arweave.transactions.sign(transaction, this.mnemonicPhrase);
 
     // const response = await this.arweave.transactions.post(transaction);
     // METHOD MORE SUITABLE FOR CHUNK UPLOAD
     let uploader = await this.arweave.transactions.getUploader(transaction);
-    console.log(uploader.isComplete);
     while (!uploader.isComplete) {
       await uploader.uploadChunk();
-      console.log(uploader.isComplete);
     }
 
     return transaction;

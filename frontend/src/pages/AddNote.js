@@ -4,45 +4,62 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
 import { useApp } from "../UseApp";
 import { WalletContext } from "..";
+import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
 
 const { Header, Content } = Layout;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
-const range = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
+
 const disabledDate = (current) => {
   // Can not select days before today and today
   return current > dayjs().endOf("day");
 };
 
+let ws;
+
 function AddNote() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [upload, setUpload] = useState("open");
-  const [uploadStatus, setUploadStatus] = useState(false);
+  const [content, setContent] = useState("");
 
-  const a = useContext(WalletContext);
-  console.log(a);
-
+  const walletContext = useContext(WalletContext);
+  const { upload, setUpload } = useContext(UploadContext);
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
-  const handleUploadStauts = () => {
-    if (upload === "uploading" && uploadStatus === true) {
-      message.success({ content: "Upload successfully!", duration: 2 });
-    }
+  const handleUpload = async () => {
+    const encrypted = await walletContext.encryptByPrivateKey(content);
+    const transaction = await walletContext.uploadOntoChain(encrypted);
+
+    setUpload({
+      id: transaction.id,
+      status: "pending",
+      content: content,
+      noteDate: pickDate,
+      uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
+    });
   };
 
-  const handleUpload = () => {
-    setUpload("uploading");
-  };
+  useEffect(() => {
+    if (upload.status === "pending") {
+      clearInterval(ws);
+      ws = setInterval(() => {
+        walletContext.pollStatus(upload.id).then((response) => {
+          if (response.status === 200) {
+            setUpload({
+              ...upload,
+              status: "complete",
+            });
+          }
+          // 200: ok! 202: pending
+        });
+      }, 10000);
+    } else if (upload.status === "complete") {
+      console.log("success");
+      clearInterval(ws);
+    }
+  }, [upload]);
 
   return (
     <Layout className="site-layout">
@@ -69,7 +86,11 @@ function AddNote() {
             marginBottom: 10,
           }}
         >
-          <h2 style={{ marginBottom: 0 }}>The date you pick is: {pickDate}</h2>
+          <h2 style={{ marginBottom: 0 }}>
+            {pickDate === dayjs().format("YYYY-MM-DD")
+              ? "Today"
+              : `${pickDate}`}
+          </h2>
           <div className="pickDate" style={{}}>
             <Space direction="vertical">
               <DatePicker
@@ -92,6 +113,10 @@ function AddNote() {
             fontFamily: "Iceberg",
             height: "70%",
             // boxShadow: "0 0 0 2px #828384",
+          }}
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
           }}
         />
         <Button

@@ -5,12 +5,29 @@ import {
   DownCircleOutlined,
 } from "@ant-design/icons";
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
-import { useState, useEffect } from "react";
-import { useApp } from "../UseApp";
+import { useState, useEffect, useContext } from "react";
+import { WalletContext } from "..";
+import { UploadContext } from "../App";
 
 const { Header, Content } = Layout;
 
 function Notes() {
+  const test = "XNqurUPOUgdBU2wnTvQgvWhkeO3icONiamWoqDiWGS0";
+  const walletContext = useContext(WalletContext);
+
+  const { upload } = useContext(UploadContext);
+  const [showNote, setShowNote] = useState([]);
+
+  const getNote = async (txId) => {
+    const transaction = await walletContext.arweave.transactions.getData(txId);
+    const decrypted = await walletContext.decryptByPrivateKey(transaction);
+    setShowNote([...showNote, decrypted]);
+  };
+
+  useEffect(() => {
+    getNote(test);
+  }, []);
+
   return (
     <Layout className="site-layout">
       <Content
@@ -28,6 +45,41 @@ function Notes() {
         }}
       >
         <h1>Notes</h1>
+        {upload.status === "pending" ? (
+          <>
+            <Divider
+              orientation="left"
+              style={{ color: "white", borderTop: "3px white" }}
+              plain
+            >
+              Pending
+            </Divider>
+            <div className="site-card-border-less-wrapper">
+              <Card title={upload.noteDate} bordered={false} style={{}}>
+                <p>{upload.content}</p>
+              </Card>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        <Divider
+          orientation="left"
+          style={{ color: "white", borderTop: "3px white" }}
+          plain
+        >
+          January
+        </Divider>
+        <div className="site-card-border-less-wrapper">
+          {showNote.map((note) => {
+            return (
+              <Card title={0} bordered={false} style={{ marginBottom: "5%" }}>
+                <p>{note}</p>
+              </Card>
+            );
+          })}
+        </div>
       </Content>
     </Layout>
   );

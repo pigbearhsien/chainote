@@ -1,7 +1,8 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { AlchemyContext } from "..";
 
 import {
   Calendar,
@@ -17,9 +18,17 @@ import {
 } from "antd";
 
 import { useApp } from "../UseApp";
+import { useMetaMask } from "metamask-react";
 
 const { Header, Content } = Layout;
 const { TextArea } = Input;
+
+dayjs.extend(customParseFormat);
+
+const disabledDate = (current) => {
+  // Can not select days before today and today
+  return current > dayjs().endOf("day");
+};
 
 const getListData = (value) => {
   let listData;
@@ -62,13 +71,30 @@ const getMonthData = (value) => {
 
 function CalendarView() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const Alchemy = useContext(AlchemyContext);
   const onChange = (date, dateString) => {
-    setPickDate(dateString);
-    console.log(pickDate);
+    setPickDate(date.format("YYYY-MM-DD"));
   };
-  const onPanelChange = (value, mode) => {
-    console.log(value.format("YYYY-MM-DD"), mode);
+
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+
+  const monthToNotes = (date) => {
+    console.log(date);
+    Alchemy.dateToNotes(ethereum, account, date + "11").then(
+      (encodedResult) => {
+        console.log(encodedResult);
+        const arr = Alchemy.interface.decodeFunctionResult(
+          Alchemy.interface.functions["dateToNotes(uint256)"],
+          encodedResult
+        );
+        console.log(arr);
+      }
+    );
   };
+
+  useEffect(() => {
+    monthToNotes(dayjs().format("YYYYMM"));
+  }, []);
 
   const monthCellRender = (value) => {
     const num = getMonthData(value);
@@ -81,7 +107,6 @@ function CalendarView() {
   };
   const dateCellRender = (value) => {
     const num = getListData(value);
-    console.log(num);
     return num.length !== 0 ? (
       <div className="notes-month">
         <div style={{ fontSize: 25 }}>・</div>
@@ -106,9 +131,9 @@ function CalendarView() {
         <Calendar
           dateCellRender={dateCellRender}
           monthCellRender={monthCellRender}
+          disabledDate={disabledDate}
           fullscreen={false}
           onChange={onChange}
-          onPanelChange={onPanelChange}
         />
       </div>
       <Content
