@@ -15,18 +15,6 @@ const { Header, Content } = Layout;
 function Settings({ setLogin }) {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
-  // const handleLogOut = () => {
-  //   if (status === "connected")
-  //     message.error({
-  //       content: "You haven't disconnect your MeatMask.",
-  //       duration: 2,
-  //     });
-  //   else if (status === "notConnected") {
-  //     message.success({ content: "Logout successfully!", duration: 2 });
-  //     setLogin(false);
-  //   }
-  // };
-
   return (
     <Layout className="site-layout">
       <Content
@@ -34,7 +22,7 @@ function Settings({ setLogin }) {
         style={{
           // margin: '24px 16px',
           padding: 24,
-          paddingTop: 50,
+          paddingTop: 40,
           minHeight: 280,
           borderRadius: 20,
           marginTop: 50,
@@ -44,26 +32,6 @@ function Settings({ setLogin }) {
         }}
       >
         <h1>Settings</h1>
-        {/* <div
-          style={{
-            marginTop: "10%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            className="logout"
-            onClick={() => handleLogOut()}
-            style={{
-              borderRadius: "50px",
-              width: "330px",
-              height: "8%",
-            }}
-          >
-            Disconnect
-          </Button>
-        </div> */}
       </Content>
     </Layout>
   );

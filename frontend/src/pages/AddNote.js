@@ -1,26 +1,8 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Input } from "antd";
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { RiDeleteBin5Fill } from "react-icons/ri";
-
-import {
-  DatePicker,
-  List,
-  Space,
-  Layout,
-  Button,
-  Tabs,
-  Card,
-  Divider,
-} from "antd";
+import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
 import { useApp } from "../UseApp";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
 
 dayjs.extend(customParseFormat);
 
@@ -41,9 +23,19 @@ const disabledDate = (current) => {
 
 function AddNote() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [upload, setUpload] = useState("open");
+  const [uploadStatus, setUploadStatus] = useState(false);
+
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
+
+  const handleUploadStauts = () => {
+    if (upload === "uploading" && uploadStatus === true) {
+      message.success({ content: "Upload successfully!", duration: 2 });
+    }
+  };
+
   return (
     <Layout className="site-layout">
       <Content
@@ -51,7 +43,7 @@ function AddNote() {
         style={{
           // margin: '24px 16px',
           padding: 24,
-          paddingTop: 50,
+          paddingTop: 40,
           minHeight: 280,
           borderRadius: 20,
           marginTop: 50,
@@ -60,6 +52,7 @@ function AddNote() {
           //   filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2))",
         }}
       >
+        <h1>Add Note</h1>
         <div
           style={{
             display: "flex",
@@ -68,7 +61,7 @@ function AddNote() {
             marginBottom: 10,
           }}
         >
-          <h1 style={{ marginBottom: 0 }}>The date you pick is: {pickDate}</h1>
+          <h2 style={{ marginBottom: 0 }}>The date you pick is: {pickDate}</h2>
           <div className="pickDate" style={{}}>
             <Space direction="vertical">
               <DatePicker
@@ -83,14 +76,13 @@ function AddNote() {
         </div>
 
         <TextArea
-          //   rows={14}
           style={{
             backgroundColor: "black",
             color: "white",
             borderColor: "white",
             fontSize: "18px",
             fontFamily: "Iceberg",
-            height: "80%",
+            height: "70%",
             // boxShadow: "0 0 0 2px #828384",
           }}
         />
@@ -100,6 +92,7 @@ function AddNote() {
             marginTop: "5%",
             width: "100%",
           }}
+          onClick={() => setUpload("uploading")}
         >
           Add
         </Button>

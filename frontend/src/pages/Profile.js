@@ -18,7 +18,7 @@ function Profile() {
         style={{
           // margin: '24px 16px',
           padding: 24,
-          paddingTop: 50,
+          paddingTop: 40,
           minHeight: 280,
           borderRadius: 20,
           marginTop: 50,
