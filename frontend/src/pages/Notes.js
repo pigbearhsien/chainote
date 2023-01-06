@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -8,9 +8,14 @@ import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { useApp } from "../UseApp";
 
+import { WalletContext } from "..";
+
 const { Header, Content } = Layout;
 
 function Notes() {
+  const context = useContext(WalletContext);
+  console.log(context.mnemonicPhrase);
+
   return (
     <Layout className="site-layout">
       <Content
