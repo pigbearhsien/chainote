@@ -17,8 +17,11 @@ function Notes({ login, setLogin }) {
   const alchemy = useContext(AlchemyContext);
 
   const getNotes = () => {
-    alchemy.getNotes(ethereum, account, 5).then((txHash) => {
-      console.log(txHash);
+    alchemy.getNotes(ethereum, account, 5).then((encodedResult) => {
+      alchemy.interface.decodeFunctionResult(
+        alchemy.interface.functions["getNotes(uint256)"],
+        encodedResult
+      );
       // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
       // setContent(txHash);
     });
