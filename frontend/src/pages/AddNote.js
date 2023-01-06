@@ -41,7 +41,6 @@ function AddNote() {
   const handleUpload = async () => {
     const encrypted = await arweave.encryptByPrivateKey(content);
     const transaction = await arweave.uploadOntoChain(encrypted);
-
     setUpload({
       id: transaction.id,
       status: "pending",
@@ -53,18 +52,19 @@ function AddNote() {
     await alchemy.uploadNote(
       ethereum,
       account,
-      dayjs().format("YYYYMMDD"),
+      pickDate.split("-").join(""),
       transaction.id
     );
   };
 
   useEffect(() => {
-    console.log("!", upload);
+    // console.log("!", upload);
     if (upload.status === "pending") {
+      clearInterval(ws);
       ws = setInterval(() => {
         arweave.pollStatus(upload.id).then((response) => {
-          console.log(response);
-          console.log(response.status === 200);
+          // console.log(response);
+          // console.log(response.status === 200);
           if (response.status === 200) {
             setUpload({
               ...upload,

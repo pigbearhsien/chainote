@@ -45,13 +45,13 @@ function NavBar({ setLogin }) {
       case "3":
         navigate("/calendar");
         break;
+      // case "4":
+      //   navigate("/profile");
+      //   break;
+      // case "5":
+      //   navigate("/settings");
+      //   break;
       case "4":
-        navigate("/profile");
-        break;
-      case "5":
-        navigate("/settings");
-        break;
-      case "6":
         handleLogOut();
         break;
       default:
@@ -130,28 +130,28 @@ function NavBar({ setLogin }) {
                 borderRadius: 50,
               },
             },
+            // {
+            //   key: "4",
+            //   icon: <UserOutlined />,
+            //   label: "Profile",
+            //   style: {
+            //     height: 50,
+            //     fontSize: 16,
+            //     borderRadius: 50,
+            //   },
+            // },
+            // {
+            //   key: "5",
+            //   icon: <SettingOutlined />,
+            //   label: "Settings",
+            //   style: {
+            //     height: 50,
+            //     fontSize: 16,
+            //     borderRadius: 50,
+            //   },
+            // },
             {
               key: "4",
-              icon: <UserOutlined />,
-              label: "Profile",
-              style: {
-                height: 50,
-                fontSize: 16,
-                borderRadius: 50,
-              },
-            },
-            {
-              key: "5",
-              icon: <SettingOutlined />,
-              label: "Settings",
-              style: {
-                height: 50,
-                fontSize: 16,
-                borderRadius: 50,
-              },
-            },
-            {
-              key: "6",
               icon: <LogoutOutlined />,
               label: "Disconnect",
               style: {

@@ -17,7 +17,7 @@ const Login = ({ setLogin }) => {
   // context.mnemonicPhrase = recoveryPhrase;
 
   // useEffect(() => {
-  //   // console.log(recoveryPhrase);
+  //   console.log(recoveryPhrase);
   //   context.mnemonicPhrase = recoveryPhrase;
   // }, [recoveryPhrase]);
 
