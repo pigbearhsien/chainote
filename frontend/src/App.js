@@ -3,13 +3,13 @@ import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
 import NavBar from "./components/NavBar";
-import Calendar from "./pages/Calendar";
+import CalendarView from "./pages/Calendar";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useApp } from "./UseApp";
-import { Layout } from "antd";
+import { Layout, Calendar } from "antd";
 import { useEffect } from "react";
 
 export const UploadContext = createContext({
