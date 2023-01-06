@@ -8,7 +8,5 @@
   "scripts": {
     "start": "cd frontend && yarn start"
   },
-  "dependencies": {
-    "metamask-react": "^2.4.1"
-  }
+  "dependencies": {}
 }
