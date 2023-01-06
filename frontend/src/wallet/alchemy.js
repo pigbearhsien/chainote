@@ -43,7 +43,6 @@ class AlchemyInterface {
       params: [params],
     });
   };
-
   monthToNotes = async (ethereum, from, month) => {
     const params = {
       from: from,

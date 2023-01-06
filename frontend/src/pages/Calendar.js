@@ -10,6 +10,13 @@ import { AlchemyContext } from "..";
 const { Header, Content } = Layout;
 const { TextArea } = Input;
 
+dayjs.extend(customParseFormat);
+
+const disabledDate = (current) => {
+  // Can not select days before today and today
+  return current > dayjs().endOf("day");
+};
+
 const getListData = (value) => {
   let listData;
   switch (value.date()) {
@@ -51,9 +58,9 @@ const getMonthData = (value) => {
 
 function CalendarView() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const Alchemy = useContext(AlchemyContext);
   const onChange = (date, dateString) => {
-    setPickDate(dateString);
-    console.log(pickDate);
+    setPickDate(date.format("YYYY-MM-DD"));
   };
 
   const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -72,6 +79,10 @@ function CalendarView() {
     );
   };
 
+  useEffect(() => {
+    monthToNotes(dayjs().format("YYYYMM"));
+  }, []);
+
   const monthCellRender = (value) => {
     const num = getMonthData(value);
     // console.log("num:", num);
@@ -83,7 +94,6 @@ function CalendarView() {
   };
   const dateCellRender = (value) => {
     const num = getListData(value);
-    console.log(num);
     return num.length !== 0 ? (
       <div className="notes-month">
         <div style={{ fontSize: 25 }}>・</div>

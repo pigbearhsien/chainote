@@ -8,5 +8,7 @@
   "scripts": {
     "start": "cd frontend && yarn start"
   },
-  "dependencies": {}
+  "dependencies": {
+    "alchemy-sdk": "^2.2.5"
+  }
 }
