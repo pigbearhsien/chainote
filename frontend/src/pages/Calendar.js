@@ -10,6 +10,10 @@ dayjs.extend(customParseFormat);
 const { Header, Content } = Layout;
 
 function Calendar() {
+  const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const onChange = (date, dateString) => {
+    setPickDate(dateString);
+  };
   return (
     <Layout className="site-layout">
       <Content
