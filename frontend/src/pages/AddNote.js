@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
+
 import { AlchemyContext, WalletContext } from "..";
 import { UploadContext } from "../App";
 
@@ -10,14 +11,7 @@ dayjs.extend(customParseFormat);
 
 const { Header, Content } = Layout;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
-const range = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
+
 const disabledDate = (current) => {
   // Can not select days before today and today
   return current > dayjs().endOf("day");
@@ -104,7 +98,11 @@ function AddNote() {
             marginBottom: 10,
           }}
         >
-          <h2 style={{ marginBottom: 0 }}>The date you pick is: {pickDate}</h2>
+          <h2 style={{ marginBottom: 0 }}>
+            {pickDate === dayjs().format("YYYY-MM-DD")
+              ? "Today"
+              : `${pickDate}`}
+          </h2>
           <div className="pickDate" style={{}}>
             <Space direction="vertical">
               <DatePicker
