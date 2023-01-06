@@ -7,26 +7,14 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
 
-const UploadProps = {
-  // name: "file",
-  // action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  // headers: {
-  //   authorization: "authorization-text",
-  // },
-  onChange(info) {
-    if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
-
 const Login = ({ setLogin }) => {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
+  const [recoveryPhrase, setRecoveryPhrase] = useState("");
+
+  useEffect(() => {
+    console.log(recoveryPhrase);
+  }, [recoveryPhrase]);
+
   console.log(status);
 
   const navigate = useNavigate();
@@ -88,7 +76,25 @@ const Login = ({ setLogin }) => {
         >
           Connect
         </Button>
-        <Upload {...UploadProps}>
+        <Upload
+          style={{
+            border: "none",
+          }}
+          accept=".json"
+          showUploadList={false}
+          beforeUpload={(file) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+              // console.log(e.target.result);
+              setRecoveryPhrase(e.target.result);
+            };
+            reader.readAsText(file);
+
+            // Prevent upload
+            return false;
+          }}
+        >
           <Button
             icon={<UploadOutlined />}
             // onClick={() => connect()}
@@ -96,6 +102,7 @@ const Login = ({ setLogin }) => {
               borderRadius: "50px",
               width: "330px",
               height: "50px",
+              marginBottom: "10px",
             }}
           >
             Arweave Recovery Phrase Upload
