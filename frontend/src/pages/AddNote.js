@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
 import { useApp } from "../UseApp";
+import { WalletContext } from "..";
 
 dayjs.extend(customParseFormat);
 
@@ -26,6 +27,9 @@ function AddNote() {
   const [upload, setUpload] = useState("open");
   const [uploadStatus, setUploadStatus] = useState(false);
 
+  const a = useContext(WalletContext);
+  console.log(a);
+
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
@@ -34,6 +38,10 @@ function AddNote() {
     if (upload === "uploading" && uploadStatus === true) {
       message.success({ content: "Upload successfully!", duration: 2 });
     }
+  };
+
+  const handleUpload = () => {
+    setUpload("uploading");
   };
 
   return (
@@ -92,7 +100,7 @@ function AddNote() {
             marginTop: "5%",
             width: "100%",
           }}
-          onClick={() => setUpload("uploading")}
+          onClick={() => handleUpload()}
         >
           Add
         </Button>
