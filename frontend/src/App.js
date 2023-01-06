@@ -3,7 +3,7 @@ import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
 import NavBar from "./components/NavBar";
-import Calendar from "./pages/Calendar";
+import CalendarView from "./pages/Calendar";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
@@ -23,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Notes></Notes>} />
           <Route path="/addNote" element={<AddNote />} />
-          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/calendar" element={<CalendarView />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
