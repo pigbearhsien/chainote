@@ -70,6 +70,37 @@
       {
         "inputs": [
           {
+            "internalType": "uint256",
+            "name": "date",
+            "type": "uint256"
+          }
+        ],
+        "name": "monthToNotes",
+        "outputs": [
+          {
+            "components": [
+              {
+                "internalType": "string",
+                "name": "date",
+                "type": "string"
+              },
+              {
+                "internalType": "string",
+                "name": "noteAddress",
+                "type": "string"
+              }
+            ],
+            "internalType": "struct ChainNote.Note[]",
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
             "internalType": "string",
             "name": "_date",
             "type": "string"
@@ -143,11 +174,11 @@
   },
   "sources": {
     "Chainote/chainote.sol": {
-      "keccak256": "0x36d2856f0f87e418b126d97b8f7689510f5f235970e626ce2b029d0756eabe37",
+      "keccak256": "0x78e6002dd608261fca07a051ee9ab121c2dbdd9dea8d37883ddc71d8cefb6abc",
       "license": "MIT",
       "urls": [
-        "bzz-raw://5156dd5ff3756f86ee47e5c9ea32c6378ff242d0a541c8f7066e7843b8c96527",
-        "dweb:/ipfs/QmbRCBVR6bvXD2oTie7ooXBqWr6ZyMszZ4731wZyLNv6sy"
+        "bzz-raw://5b4d8e854b2ec667a1e87d9fb1acbb6b8a27226996da4972e0ecc1db04b91b14",
+        "dweb:/ipfs/QmeK5KUP9Js2doxZumeih3dZmExuSjwgkgqyArLF4DL6XR"
       ]
     }
   },

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
+import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
-import { useApp } from "../UseApp";
+import { AlchemyContext, WalletContext } from "..";
+import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
 
@@ -21,20 +23,61 @@ const disabledDate = (current) => {
   return current > dayjs().endOf("day");
 };
 
+let ws;
+
 function AddNote() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [upload, setUpload] = useState("open");
-  const [uploadStatus, setUploadStatus] = useState(false);
+  const [content, setContent] = useState("");
+
+  const arweave = useContext(WalletContext);
+  const alchemy = useContext(AlchemyContext);
+  const { upload, setUpload } = useContext(UploadContext);
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
-  const handleUploadStauts = () => {
-    if (upload === "uploading" && uploadStatus === true) {
-      message.success({ content: "Upload successfully!", duration: 2 });
-    }
+  const handleUpload = async () => {
+    const encrypted = await arweave.encryptByPrivateKey(content);
+    const transaction = await arweave.uploadOntoChain(encrypted);
+
+    setUpload({
+      id: transaction.id,
+      status: "pending",
+      content: content,
+      noteDate: pickDate,
+      uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
+    });
+
+    await alchemy.uploadNote(
+      ethereum,
+      account,
+      dayjs().format("YYYYMMDD"),
+      transaction.id
+    );
   };
+
+  useEffect(() => {
+    console.log("!", upload);
+    if (upload.status === "pending") {
+      ws = setInterval(() => {
+        arweave.pollStatus(upload.id).then((response) => {
+          console.log(response);
+          console.log(response.status === 200);
+          if (response.status === 200) {
+            setUpload({
+              ...upload,
+              status: "complete",
+            });
+          }
+          // 200: ok! 202: pending
+        });
+      }, 10000);
+    } else if (upload.status === "complete") {
+      clearInterval(ws);
+    }
+  }, [upload]);
 
   return (
     <Layout className="site-layout">
@@ -85,6 +128,10 @@ function AddNote() {
             height: "70%",
             // boxShadow: "0 0 0 2px #828384",
           }}
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
+          }}
         />
         <Button
           style={{
@@ -95,7 +142,7 @@ function AddNote() {
             alignItems: "center",
             justifyContent: "center",
           }}
-          onClick={() => setUpload("uploading")}
+          onClick={() => handleUpload()}
         >
           Add
         </Button>

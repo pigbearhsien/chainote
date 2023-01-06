@@ -16,6 +16,20 @@ class AlchemyInterface {
     this.interface = new ethers.utils.Interface(abid.output.abi);
   }
 
+  monthToNotes = async (ethereum, from, date) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("dateToNotes", [
+        ethers.BigNumber.from(date),
+      ]),
+    };
+    return await ethereum.request({
+      method: "eth_call",
+      params: params,
+    });
+  };
+
   dateToNotes = async (ethereum, from, date) => {
     const params = {
       from: from,
@@ -25,8 +39,22 @@ class AlchemyInterface {
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_call",
+      params: [params],
+    });
+  };
+
+  monthToNotes = async (ethereum, from, month) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("monthToNotes", [
+        ethers.BigNumber.from(month),
+      ]),
+    };
+    return await ethereum.request({
+      method: "eth_call",
+      params: [params],
     });
   };
 
@@ -50,14 +78,14 @@ class AlchemyInterface {
     const params = {
       from: from,
       to: this.smartContract,
-      data: this.interface.encodeFunctionData("uploadNote", [
+      data: this.interface.encodeFunctionData("uploadNotes", [
         date.toString(),
         noteAddress,
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_sendTransaction",
+      params: [params],
     });
   };
 

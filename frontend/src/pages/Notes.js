@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useMetaMask } from "metamask-react";
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
-import { useApp } from "../UseApp";
+import { UploadContext } from "../App";
 import { WalletContext, AlchemyContext } from "..";
 // import * as ethers from "ethers";
 
@@ -10,18 +10,32 @@ const { Header, Content } = Layout;
 
 function Notes({ login, setLogin }) {
   const arweave = useContext(WalletContext);
+  const { upload } = useContext(UploadContext);
+  const alchemy = useContext(AlchemyContext);
+
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [content, setContent] = useState();
   // console.log(arweave.mnemonicPhrase);
 
-  const alchemy = useContext(AlchemyContext);
+  const [showNote, setShowNote] = useState([]);
+
+  const getNote_arweave = async (txId) => {
+    const transaction = await arweave.arweave.transactions.getData(txId);
+    const decrypted = await arweave.decryptByPrivateKey(transaction);
+    setShowNote([...showNote, decrypted]);
+  };
 
   const getNotes = () => {
     alchemy.getNotes(ethereum, account, 5).then((encodedResult) => {
-      alchemy.interface.decodeFunctionResult(
+      const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
+      console.log(arr);
+      for (const i of arr) {
+        console.log(i, i[0][1]);
+        getNote_arweave(i[0][1]);
+      }
       // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
       // setContent(txHash);
     });
@@ -48,7 +62,41 @@ function Notes({ login, setLogin }) {
         }}
       >
         <h1>Notes</h1>
-        <div></div>
+        {upload.status === "pending" ? (
+          <>
+            <Divider
+              orientation="left"
+              style={{ color: "white", borderTop: "3px white" }}
+              plain
+            >
+              Pending
+            </Divider>
+            <div className="site-card-border-less-wrapper">
+              <Card title={upload.noteDate} bordered={false} style={{}}>
+                <p>{upload.content}</p>
+              </Card>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        <Divider
+          orientation="left"
+          style={{ color: "white", borderTop: "3px white" }}
+          plain
+        >
+          January
+        </Divider>
+        <div className="site-card-border-less-wrapper">
+          {showNote.map((note) => {
+            return (
+              <Card title={0} bordered={false} style={{ marginBottom: "5%" }}>
+                <p>{note}</p>
+              </Card>
+            );
+          })}
+        </div>
         <Button
           style={{
             borderRadius: "50px",
