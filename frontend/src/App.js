@@ -14,19 +14,22 @@ import { useEffect } from "react";
 function App() {
   const { pathname } = useLocation();
   const { setStatus, key, setKey } = useApp();
-
-  return (
-    <Layout>
-      <NavBar setKey={setKey} />
-      <Routes>
-        <Route path="/" element={<Notes></Notes>} />
-        <Route path="/addNote" element={<AddNote />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </Layout>
-  );
+  if (login) {
+    return (
+      <Layout>
+        <NavBar setKey={setKey} setLogin={setLogin} />
+        <Routes>
+          <Route path="/" element={<Notes></Notes>} />
+          <Route path="/addNote" element={<AddNote />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Layout>
+    );
+  } else {
+    return <Login login={login} setLogin={setLogin} />;
+  }
 }
 
 export default App;
