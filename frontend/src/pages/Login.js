@@ -21,7 +21,7 @@ const Login = ({ setLogin }) => {
     context.mnemonicPhrase = recoveryPhrase;
   }, [recoveryPhrase]);
 
-  console.log(status);
+  // console.log(status);
 
   const navigate = useNavigate();
 

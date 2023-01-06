@@ -155,7 +155,7 @@ class ArweaveInterface {
   };
 
   uploadOntoChain = async (encrypted, key) => {
-    console.log("1");
+    // console.log("1");
     const transaction = await this.arweave.createTransaction(
       {
         data: Buffer.from(encrypted, "base64"),
@@ -163,19 +163,19 @@ class ArweaveInterface {
       key
     );
 
-    console.log("2", transaction);
+    // console.log("2", transaction);
 
     await this.arweave.transactions.sign(transaction, key);
 
-    console.log(transaction);
+    // console.log(transaction);
 
     // const response = await this.arweave.transactions.post(transaction);
     // METHOD MORE SUITABLE FOR CHUNK UPLOAD
     let uploader = await this.arweave.transactions.getUploader(transaction);
-    console.log(uploader.isComplete);
+    // console.log(uploader.isComplete);
     while (!uploader.isComplete) {
       await uploader.uploadChunk();
-      console.log(uploader.isComplete);
+      //   console.log(uploader.isComplete);
     }
 
     return transaction;
