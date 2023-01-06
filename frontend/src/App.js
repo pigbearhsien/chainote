@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
+import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
 import NavBar from "./components/NavBar";
 import Calendar from "./pages/Calendar";
@@ -12,6 +13,7 @@ import { Layout } from "antd";
 import { useEffect } from "react";
 
 function App() {
+  const [login, setLogin] = useState(false);
   const { pathname } = useLocation();
   const { setStatus, key, setKey } = useApp();
   if (login) {

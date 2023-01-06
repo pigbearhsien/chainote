@@ -1,4 +1,5 @@
 import React from "react";
+import { message } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -7,6 +8,7 @@ import {
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { useApp } from "../UseApp";
+import { useMetaMask } from "metamask-react";
 
 const { Header, Content } = Layout;
 
