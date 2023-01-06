@@ -66,15 +66,15 @@ function CalendarView() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const monthToNotes = (date) => {
-    console.log(date);
+    // console.log(date);
     Alchemy.dateToNotes(ethereum, account, date + "11").then(
       (encodedResult) => {
-        console.log(encodedResult);
+        // console.log(encodedResult);
         const arr = Alchemy.interface.decodeFunctionResult(
           Alchemy.interface.functions["dateToNotes(uint256)"],
           encodedResult
         );
-        console.log(arr);
+        // console.log(arr);
       }
     );
   };
@@ -85,7 +85,7 @@ function CalendarView() {
 
   const monthCellRender = (value) => {
     const num = getMonthData(value);
-    console.log("num:", num);
+    // console.log("num:", num);
     return num ? (
       <div className="notes-month">
         <section>{num}</section>
@@ -151,12 +151,12 @@ function CalendarView() {
     const monthToNotes = (month) => {
       Alchemy.monthToNotes(ethereum, account, Number(month)).then(
         (encodedResult) => {
-          console.log(encodedResult);
+          // console.log(encodedResult);
           const arr = Alchemy.interface.decodeFunctionResult(
             Alchemy.interface.functions["dateToNotes(uint256)"],
             encodedResult
           );
-          console.log(arr);
+          // console.log(arr);
         }
       );
     };
@@ -167,15 +167,15 @@ function CalendarView() {
     const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
     const onChange = (date, dateString) => {
       setPickDate(dateString);
-      console.log(pickDate);
+      // console.log(pickDate);
     };
     const onPanelChange = (value, mode) => {
-      console.log(value.format("YYYY-MM-DD"), mode);
+      // console.log(value.format("YYYY-MM-DD"), mode);
     };
 
     const monthCellRender = (value) => {
       const num = getMonthData(value);
-      console.log("num:", num);
+      // console.log("num:", num);
       return num ? (
         <div className="notes-month">
           <section>{num}</section>

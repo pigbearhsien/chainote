@@ -19,31 +19,45 @@ function Notes({ login, setLogin }) {
 
   const [showNote, setShowNote] = useState([]);
 
-  const getNote_arweave = async (txId) => {
+  useEffect(() => {
+    console.log(upload);
+  }, [upload]);
+
+  useEffect(() => {
+    console.log(showNote);
+  }, [showNote]);
+
+  const getNote_arweave = async (date, txId) => {
+    console.log(date);
     const transaction = await arweave.arweave.transactions.getData(txId);
     const decrypted = await arweave.decryptByPrivateKey(transaction);
-    setShowNote([...showNote, decrypted]);
+    setShowNote((prev) => [...prev, [date, decrypted]]);
   };
 
-  const getNotes = () => {
-    alchemy.getNotes(ethereum, account, 5).then((encodedResult) => {
+  const getNotes = async () => {
+    await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
       const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      console.log(arr);
-      for (const i of arr) {
-        console.log(i, i[0][1]);
-        getNote_arweave(i[0][1]);
-      }
+      // console.log(arr);
+      arr.map((element) => {
+        element.map((item) => {
+          getNote_arweave(item[0], item[1]);
+        });
+      });
+      // for (const i of arr) {
+      //   console.log(i, i[0][1]);
+      //   getNote_arweave(i[0][1]);
+      // }
       // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
       // setContent(txHash);
     });
   };
 
-  useEffect(() => {
-    // console.log(content);
-  }, [content]);
+  // useEffect(() => {
+  // console.log(content);
+  // }, [content]);
 
   return (
     <Layout className="site-layout">
@@ -72,10 +86,16 @@ function Notes({ login, setLogin }) {
               Pending
             </Divider>
             <div className="site-card-border-less-wrapper">
-              <Card title={upload.noteDate} bordered={false} style={{}}>
+              <Card title={upload.noteDate} bordered={false} size="small">
                 <p>{upload.content}</p>
               </Card>
             </div>
+            {/* <List>
+              <List.Item style={{ color: "white" }}>
+                <List.Item.Meta title={upload.noteDate} />
+                <div>{upload.content}</div>
+              </List.Item>
+            </List> */}
           </>
         ) : (
           <></>
@@ -89,9 +109,15 @@ function Notes({ login, setLogin }) {
           January
         </Divider>
         <div className="site-card-border-less-wrapper">
-          {showNote.map((note) => {
+          {showNote.map(([date, note], i) => {
+            // console.log(note);
             return (
-              <Card title={0} bordered={false} style={{ marginBottom: "5%" }}>
+              <Card
+                bordered={false}
+                style={{ marginBottom: "5%" }}
+                key={i}
+                title={date}
+              >
                 <p>{note}</p>
               </Card>
             );
