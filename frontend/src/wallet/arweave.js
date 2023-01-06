@@ -8,7 +8,7 @@ import { assert } from "console";
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
-    // this.mnemonicPhrase = JSON.parse();
+    this.mnemonicPhrase = undefined;
   }
 
   generateArweaveWallet = async () => {
