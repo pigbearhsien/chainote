@@ -5,17 +5,33 @@ import {
   FileAddOutlined,
   CalendarOutlined,
   SettingOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../UseApp";
 import logo from "../img/ChainNote_white.png";
 
+import { useMetaMask } from "metamask-react";
+
 const { Sider } = Layout;
 
-function NavBar() {
+function NavBar({ setLogin }) {
   const navigate = useNavigate();
   const { key, setKey, setSignIn, setStatus } = useApp();
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+
+  const handleLogOut = () => {
+    if (status === "connected")
+      message.error({
+        content: "You haven't disconnect your MeatMask.",
+        duration: 2,
+      });
+    else if (status === "notConnected") {
+      message.success({ content: "Logout successfully!", duration: 2 });
+      setLogin(false);
+    }
+  };
 
   function navigatePage(key) {
     setKey(key);
@@ -31,6 +47,9 @@ function NavBar() {
         break;
       case "5":
         navigate("/settings");
+        break;
+      case "6":
+        handleLogOut();
         break;
       default:
         navigate("/");
@@ -122,6 +141,16 @@ function NavBar() {
               key: "5",
               icon: <SettingOutlined />,
               label: "Settings",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
+            {
+              key: "6",
+              icon: <LogoutOutlined />,
+              label: "Disconnect",
               style: {
                 height: 50,
                 fontSize: 16,

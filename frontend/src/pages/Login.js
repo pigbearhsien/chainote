@@ -16,11 +16,13 @@ const Login = ({ setLogin }) => {
     <Content
       className="site-layout-background"
       style={{
-        padding: 100,
+        // padding: 100,
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         backgroundColor: "black",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
@@ -28,19 +30,23 @@ const Login = ({ setLogin }) => {
         style={{
           display: "flex",
           justifyContent: "Center",
-          height: 200,
-          // marginTop: 50,
-          marginBottom: 20,
+          // marginTop: 30,
+          // marginBottom: 20,
         }}
       >
-        <img src={logo}></img>
+        <img
+          src={logo}
+          style={{
+            height: "70%",
+          }}
+        ></img>
       </div>
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "10%",
+          // marginTop: "10%",
         }}
       >
         <Button
@@ -48,7 +54,7 @@ const Login = ({ setLogin }) => {
           onClick={() => connect()}
           style={{
             borderRadius: "50px",
-            width: "30%",
+            width: "330px",
             height: "120%",
           }}
         >

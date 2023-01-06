@@ -19,13 +19,13 @@ function App() {
   if (login) {
     return (
       <Layout>
-        <NavBar setKey={setKey} />
+        <NavBar setKey={setKey} setLogin={setLogin} />
         <Routes>
           <Route path="/" element={<Notes></Notes>} />
           <Route path="/addNote" element={<AddNote />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings setLogin={setLogin} />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </Layout>
     );
