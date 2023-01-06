@@ -36,6 +36,9 @@ function NavBar({ setLogin }) {
   function navigatePage(key) {
     setKey(key);
     switch (key) {
+      case "1":
+        navigate("/");
+        break;
       case "2":
         navigate("/addNote");
         break;

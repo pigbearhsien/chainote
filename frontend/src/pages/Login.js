@@ -1,17 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useMetaMask } from "metamask-react";
-import { Button, Checkbox, Form, Input, Layout } from "antd";
+import { Button, Checkbox, Form, Input, Layout, Upload, message } from "antd";
 import logo from "../img/ChainNote_white.png";
+import { useNavigate } from "react-router-dom";
+import { UploadOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
+
+const props: UploadProps = {
+  // name: "file",
+  // action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  // headers: {
+  //   authorization: "authorization-text",
+  // },
+  onChange(info) {
+    if (info.file.status !== "uploading") {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === "done") {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+};
 
 const Login = ({ setLogin }) => {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   console.log(status);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (status === "connected") setLogin(true);
+    if (status === "connected") {
+      setLogin(true);
+      navigate("/");
+    }
   }, [status]);
+
   return (
     <Content
       className="site-layout-background"
@@ -32,6 +58,7 @@ const Login = ({ setLogin }) => {
           justifyContent: "Center",
           // marginTop: 30,
           // marginBottom: 20,
+          marginBottom: "-50px",
         }}
       >
         <img
@@ -46,20 +73,34 @@ const Login = ({ setLogin }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          flexDirection: "column",
           // marginTop: "10%",
         }}
       >
         <Button
-          className="connect"
           onClick={() => connect()}
           style={{
             borderRadius: "50px",
             width: "330px",
-            height: "120%",
+            height: "50px",
+            marginBottom: "8%",
           }}
         >
-          Cononect
+          Connect
         </Button>
+        <Upload {...props}>
+          <Button
+            icon={<UploadOutlined />}
+            // onClick={() => connect()}
+            style={{
+              borderRadius: "50px",
+              width: "330px",
+              height: "50px",
+            }}
+          >
+            Arweave Recovery Phrase Upload
+          </Button>
+        </Upload>
       </div>
     </Content>
   );

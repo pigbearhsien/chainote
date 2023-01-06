@@ -57,7 +57,7 @@ html {
 .ant-btn:hover {
   color: black !important;
   border-color: white !important;
-  box-shadow: 0 0 0 2px gray;
+  box-shadow: 0 0 0 4px gray;
   /* border: 2px solid white; */
 }
 
