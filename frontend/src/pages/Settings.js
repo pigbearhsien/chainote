@@ -1,4 +1,5 @@
 import React from "react";
+import { message } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -7,10 +8,25 @@ import {
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { useApp } from "../UseApp";
+import { useMetaMask } from "metamask-react";
 
 const { Header, Content } = Layout;
 
-function Settings() {
+function Settings({ setLogin }) {
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+
+  const handleLogOut = () => {
+    if (status === "connected")
+      message.error({
+        content: "You haven't disconnect your MeatMask.",
+        duration: 2,
+      });
+    else if (status === "notConnected") {
+      message.success({ content: "Logout successfully!", duration: 2 });
+      setLogin(false);
+    }
+  };
+
   return (
     <Layout className="site-layout">
       <Content
@@ -28,6 +44,9 @@ function Settings() {
         }}
       >
         <h1>Settings</h1>
+        <button className="logout" onClick={() => handleLogOut()}>
+          Disconnect
+        </button>
       </Content>
     </Layout>
   );
