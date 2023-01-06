@@ -15,14 +15,8 @@ import {
   Divider,
   Badge,
 } from "antd";
-import { useApp } from "../UseApp";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
 
-dayjs.extend(customParseFormat);
+import { useApp } from "../UseApp";
 
 const { Header, Content } = Layout;
 const { TextArea } = Input;
@@ -98,6 +92,7 @@ function CalendarView() {
       </div>
     );
   };
+
   return (
     <Layout className="site-layout">
       <div

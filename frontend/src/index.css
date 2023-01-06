@@ -57,7 +57,7 @@ html {
 .ant-btn:hover {
   color: black !important;
   border-color: white !important;
-  box-shadow: 0 0 0 4px gray;
+  box-shadow: 0 0 0 3px gray;
   /* border: 2px solid white; */
 }
 
@@ -115,25 +115,25 @@ textarea:hover {
 }
 
 .ant-picker-input:focus {
-  border-color: #dba083;
+  border-color: white;
 }
 .ant-picker:hover {
-  border-color: #dba083;
+  border-color: white;
   outline: 0;
-  -webkit-box-shadow: 0 0 0 2px #dba083;
-  box-shadow: 0 0 0 2px #ffdaab;
+  -webkit-box-shadow: 0 0 0 2px white;
+  box-shadow: 0 0 0 2px white;
 }
 .ant-picker-focused {
-  border-color: #dba083;
+  border-color: white;
   outline: 0;
-  -webkit-box-shadow: 0 0 0 2px #dba083;
-  box-shadow: 0 0 0 2px #ffdaab;
+  -webkit-box-shadow: 0 0 0 2px white;
+  box-shadow: 0 0 0 2px white;
 }
 .ant-input:hover {
-  border-color: #dba083;
+  border-color: white;
 }
 .ant-input[class="password"]:hover {
-  border-color: #dba083;
+  border-color: white;
 }
 a:hover {
   color: #ffdaab;
@@ -144,24 +144,31 @@ a {
 .ant-picker-dropdown
   .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-today)
   .ant-picker-cell-inner::before {
-  border-color: #dba083;
+  border-color: white;
 }
+
 .ant-picker-dropdown
   .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-selected)
   .ant-picker-cell-inner {
-  background-color: #dba083;
+  background-color: white;
+}
+.ant-picker-dropdown .ant-picker-today-btn:hover {
+  color: gray;
 }
 
 .ant-picker-dropdown
   .ant-picker-time-panel-column
   > li.ant-picker-time-panel-cell-selected
   .ant-picker-time-panel-cell-inner {
-  background-color: #ffdaab;
+  background-color: white;
 }
 .ant-picker-dropdown
   .ant-picker-cell-in-view:is(.ant-picker-dropdown .ant-picker-cell-selected)
   .ant-picker-cell-inner {
-  background-color: #dba083;
+  background-color: black;
+}
+.ant-picker-dropdown .ant-picker-today-btn {
+  color: black;
 }
 
 .ant-pagination .ant-pagination-item-active a {
