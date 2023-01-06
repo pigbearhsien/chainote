@@ -21,7 +21,10 @@ function App() {
       <Layout>
         <NavBar setKey={setKey} setLogin={setLogin} />
         <Routes>
-          <Route path="/" element={<Notes></Notes>} />
+          <Route
+            path="/"
+            element={<Notes login={login} setLogin={setLogin}></Notes>}
+          />
           <Route path="/addNote" element={<AddNote />} />
           <Route path="/calendar" element={<CalendarView />} />
           <Route path="/profile" element={<Profile />} />

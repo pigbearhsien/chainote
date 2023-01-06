@@ -91,6 +91,9 @@ function AddNote() {
             borderRadius: "50px",
             marginTop: "5%",
             width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={() => setUpload("uploading")}
         >
