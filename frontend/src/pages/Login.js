@@ -7,7 +7,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
 
-const props: UploadProps = {
+const UploadProps = {
   // name: "file",
   // action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
   // headers: {
@@ -88,7 +88,7 @@ const Login = ({ setLogin }) => {
         >
           Connect
         </Button>
-        <Upload {...props}>
+        <Upload {...UploadProps}>
           <Button
             icon={<UploadOutlined />}
             // onClick={() => connect()}
