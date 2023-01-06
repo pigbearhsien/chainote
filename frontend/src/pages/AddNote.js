@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
+import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
-import { useApp } from "../UseApp";
-import { WalletContext } from "..";
+
+import { AlchemyContext, WalletContext } from "..";
 import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
@@ -22,15 +23,18 @@ function AddNote() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [content, setContent] = useState("");
 
-  const walletContext = useContext(WalletContext);
+  const arweave = useContext(WalletContext);
+  const alchemy = useContext(AlchemyContext);
   const { upload, setUpload } = useContext(UploadContext);
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
   const handleUpload = async () => {
-    const encrypted = await walletContext.encryptByPrivateKey(content);
-    const transaction = await walletContext.uploadOntoChain(encrypted);
+    const encrypted = await arweave.encryptByPrivateKey(content);
+    const transaction = await arweave.uploadOntoChain(encrypted);
 
     setUpload({
       id: transaction.id,
@@ -39,13 +43,22 @@ function AddNote() {
       noteDate: pickDate,
       uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
     });
+
+    await alchemy.uploadNote(
+      ethereum,
+      account,
+      dayjs().format("YYYYMMDD"),
+      transaction.id
+    );
   };
 
   useEffect(() => {
+    console.log("!", upload);
     if (upload.status === "pending") {
-      clearInterval(ws);
       ws = setInterval(() => {
-        walletContext.pollStatus(upload.id).then((response) => {
+        arweave.pollStatus(upload.id).then((response) => {
+          console.log(response);
+          console.log(response.status === 200);
           if (response.status === 200) {
             setUpload({
               ...upload,
@@ -56,7 +69,6 @@ function AddNote() {
         });
       }, 10000);
     } else if (upload.status === "complete") {
-      console.log("success");
       clearInterval(ws);
     }
   }, [upload]);
@@ -124,6 +136,9 @@ function AddNote() {
             borderRadius: "50px",
             marginTop: "5%",
             width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={() => handleUpload()}
         >

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMetaMask } from "metamask-react";
 import { Button, Checkbox, Form, Input, Layout, Upload, message } from "antd";
 import logo from "../img/ChainNote_white.png";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
+import { WalletContext } from "..";
 
 const { Header, Content } = Layout;
 
@@ -11,11 +12,16 @@ const Login = ({ setLogin }) => {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
 
-  useEffect(() => {
-    console.log(recoveryPhrase);
-  }, [recoveryPhrase]);
+  // const context = useContext(WalletContext);
+  // console.log(context);
+  // context.mnemonicPhrase = recoveryPhrase;
 
-  console.log(status);
+  // useEffect(() => {
+  //   // console.log(recoveryPhrase);
+  //   context.mnemonicPhrase = recoveryPhrase;
+  // }, [recoveryPhrase]);
+
+  // console.log(status);
 
   const navigate = useNavigate();
 

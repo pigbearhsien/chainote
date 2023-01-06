@@ -10,6 +10,7 @@ import _abi from "./abi.json";
 // import AlchemyInterface from "./wallet/alchemy";
 
 const arweave = new ArweaveInterface();
+// console.log(arweave.mnemonicPhrase);
 export const WalletContext = createContext(arweave);
 
 const abi = _abi;

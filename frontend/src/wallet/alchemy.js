@@ -11,10 +11,24 @@ class AlchemyInterface {
     this.alchemy = new Alchemy(settings);
     this.smartContract = solidity_sc;
 
-    console.log(abid.output.abi);
+    // console.log(abid.output.abi);
 
     this.interface = new ethers.utils.Interface(abid.output.abi);
   }
+
+  monthToNotes = async (ethereum, from, date) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("dateToNotes", [
+        ethers.BigNumber.from(date),
+      ]),
+    };
+    return await ethereum.request({
+      method: "eth_call",
+      params: params,
+    });
+  };
 
   dateToNotes = async (ethereum, from, date) => {
     const params = {
@@ -42,17 +56,20 @@ class AlchemyInterface {
       params: [params],
     });
   };
-  getNotes = async (ethereum, from, number) => {
+
+  getNotes = async (ethereum, fromAccount, number) => {
+    // console.log(fromAccount);
+    // console.log(this.smartContract);
     const params = {
-      from: from,
+      from: fromAccount,
       to: this.smartContract,
       data: this.interface.encodeFunctionData("getNotes", [
         ethers.BigNumber.from(number),
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_call",
+      params: [params],
     });
   };
 
@@ -60,14 +77,14 @@ class AlchemyInterface {
     const params = {
       from: from,
       to: this.smartContract,
-      data: this.interface.encodeFunctionData("uploadNote", [
+      data: this.interface.encodeFunctionData("uploadNotes", [
         date.toString(),
         noteAddress,
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_sendTransaction",
+      params: [params],
     });
   };
 
@@ -77,8 +94,8 @@ class AlchemyInterface {
         method: AlchemySubscription.PENDING_TRANSACTIONS,
         toAddress: this.smartContract,
         fromAddress: who,
-      },
-      (tx) => console.log(tx)
+      }
+      //   (tx) => console.log(tx)
     );
 
     return ws;

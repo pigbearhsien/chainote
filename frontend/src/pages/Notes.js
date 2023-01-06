@@ -1,32 +1,49 @@
-import React from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
+import React, { useContext } from "react";
+import { useMetaMask } from "metamask-react";
 import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
-import { useState, useEffect, useContext } from "react";
-import { WalletContext } from "..";
+import { useState, useEffect } from "react";
 import { UploadContext } from "../App";
+import { WalletContext, AlchemyContext } from "..";
+// import * as ethers from "ethers";
 
 const { Header, Content } = Layout;
 
-function Notes() {
-  const test = "XNqurUPOUgdBU2wnTvQgvWhkeO3icONiamWoqDiWGS0";
-  const walletContext = useContext(WalletContext);
-
+function Notes({ login, setLogin }) {
+  const arweave = useContext(WalletContext);
   const { upload } = useContext(UploadContext);
+  const alchemy = useContext(AlchemyContext);
+
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+  const [content, setContent] = useState();
+  // console.log(arweave.mnemonicPhrase);
+
   const [showNote, setShowNote] = useState([]);
 
-  const getNote = async (txId) => {
-    const transaction = await walletContext.arweave.transactions.getData(txId);
-    const decrypted = await walletContext.decryptByPrivateKey(transaction);
+  const getNote_arweave = async (txId) => {
+    const transaction = await arweave.arweave.transactions.getData(txId);
+    const decrypted = await arweave.decryptByPrivateKey(transaction);
     setShowNote([...showNote, decrypted]);
   };
 
+  const getNotes = () => {
+    alchemy.getNotes(ethereum, account, 5).then((encodedResult) => {
+      const arr = alchemy.interface.decodeFunctionResult(
+        alchemy.interface.functions["getNotes(uint256)"],
+        encodedResult
+      );
+      console.log(arr);
+      for (const i of arr) {
+        console.log(i, i[0][1]);
+        getNote_arweave(i[0][1]);
+      }
+      // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
+      // setContent(txHash);
+    });
+  };
+
   useEffect(() => {
-    getNote(test);
-  }, []);
+    // console.log(content);
+  }, [content]);
 
   return (
     <Layout className="site-layout">
@@ -80,6 +97,19 @@ function Notes() {
             );
           })}
         </div>
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "5%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={getNotes}
+        >
+          Fetch Notes
+        </Button>
       </Content>
     </Layout>
   );
