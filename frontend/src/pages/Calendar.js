@@ -135,6 +135,7 @@ function CalendarView() {
               value={value.format("YYYY-MM-DD")}
               key={value.format("YYYY-MM-DD")}
               onClick={(e) => viewNote(e)}
+              style={{ marginTop: 5, marginLeft: 5, marginRight: 2, width: 65 }}
             >
               View
             </Button>
