@@ -51,7 +51,9 @@ function Notes({ login, setLogin }) {
   };
 
   const getNotes = async () => {
+    console.log("handling...");
     await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
+      console.log(encodedResult);
       const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
