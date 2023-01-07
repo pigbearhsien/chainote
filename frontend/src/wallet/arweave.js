@@ -9,7 +9,8 @@ import { mnemonicPhrase } from "./utils";
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
-    this.mnemonicPhrase = mnemonicPhrase;
+
+    this.mnemonicPhrase = "0x";
   }
 
   generateArweaveWallet = async () => {
@@ -157,6 +158,8 @@ class ArweaveInterface {
   };
 
   uploadOntoChain = async (encrypted) => {
+    const private_key = this.mnemonicPhrase;
+    // console.log("priv:", private_key);
     const transaction = await this.arweave.createTransaction(
       {
         data: Buffer.from(encrypted, "base64"),
@@ -165,9 +168,8 @@ class ArweaveInterface {
     );
 
     // console.log(transaction);
-
-    await this.arweave.transactions.sign(transaction, this.mnemonicPhrase);
-
+    await this.arweave.transactions.sign(transaction, private_key);
+    // console.log(transaction);
     // const response = await this.arweave.transactions.post(transaction);
     // METHOD MORE SUITABLE FOR CHUNK UPLOAD
     let uploader = await this.arweave.transactions.getUploader(transaction);

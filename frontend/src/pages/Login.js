@@ -12,14 +12,12 @@ const Login = ({ setLogin }) => {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
 
-  // const context = useContext(WalletContext);
-  // console.log(context);
-  // context.mnemonicPhrase = recoveryPhrase;
+  const context = useContext(WalletContext);
+  context.mnemonicPhrase = recoveryPhrase;
 
-  // useEffect(() => {
-  //   // console.log(recoveryPhrase);
-  //   context.mnemonicPhrase = recoveryPhrase;
-  // }, [recoveryPhrase]);
+  useEffect(() => {
+    context.mnemonicPhrase = recoveryPhrase;
+  }, [recoveryPhrase]);
 
   // console.log(status);
 

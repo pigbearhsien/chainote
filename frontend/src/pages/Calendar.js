@@ -51,6 +51,7 @@ const getListData = (value) => {
 };
 
 function CalendarView() {
+  console.log(ethereum);
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const Alchemy = useContext(AlchemyContext);
   const onChange = (date, dateString) => {
@@ -69,6 +70,8 @@ function CalendarView() {
       console.log(arr);
     });
   };
+
+  console.log(ethereum);
 
   useEffect(() => {
     monthToNotes(dayjs().format("YYYYMM"));

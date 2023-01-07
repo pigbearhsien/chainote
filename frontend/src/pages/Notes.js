@@ -25,17 +25,56 @@ function Notes() {
   const walletContext = useContext(WalletContext);
 
   const { upload } = useContext(UploadContext);
+  const alchemy = useContext(AlchemyContext);
+
+  // console.log(arweave.mnemonicPhrase);
+
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+  const [content, setContent] = useState();
+  // console.log(arweave.mnemonicPhrase);
+
   const [showNote, setShowNote] = useState([]);
 
-  const getNote = async (txId) => {
-    const transaction = await walletContext.arweave.transactions.getData(txId);
-    const decrypted = await walletContext.decryptByPrivateKey(transaction);
-    setShowNote([...showNote, decrypted]);
+  // useEffect(() => {
+  //   console.log(upload);
+  // }, [upload]);
+
+  // useEffect(() => {
+  //   console.log(showNote);
+  // }, [showNote]);
+
+  const getNote_arweave = async (date, txId) => {
+    console.log(date);
+    const transaction = await arweave.arweave.transactions.getData(txId);
+    console.log(transaction);
+    const decrypted = await arweave.decryptByPrivateKey(transaction);
+    setShowNote((prev) => [...prev, [date, decrypted]]);
   };
 
-  useEffect(() => {
-    getNote(test);
-  }, []);
+  const getNotes = async () => {
+    await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
+      const arr = alchemy.interface.decodeFunctionResult(
+        alchemy.interface.functions["getNotes(uint256)"],
+        encodedResult
+      );
+      // console.log(arr);
+      arr.map((element) => {
+        element.map((item) => {
+          getNote_arweave(item[0], item[1]);
+        });
+      });
+      // for (const i of arr) {
+      //   console.log(i, i[0][1]);
+      //   getNote_arweave(i[0][1]);
+      // }
+      // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
+      // setContent(txHash);
+    });
+  };
+
+  // useEffect(() => {
+  // console.log(content);
+  // }, [content]);
 
   return (
     <Layout className="site-layout">
@@ -64,10 +103,16 @@ function Notes() {
               Pending
             </Divider>
             <div className="site-card-border-less-wrapper">
-              <Card title={upload.noteDate} bordered={false} style={{}}>
+              <Card title={upload.noteDate} bordered={false} size="small">
                 <p>{upload.content}</p>
               </Card>
             </div>
+            {/* <List>
+              <List.Item style={{ color: "white" }}>
+                <List.Item.Meta title={upload.noteDate} />
+                <div>{upload.content}</div>
+              </List.Item>
+            </List> */}
           </>
         ) : (
           <></>
@@ -81,9 +126,15 @@ function Notes() {
           Latest 20 notes
         </Divider>
         <div className="site-card-border-less-wrapper">
-          {showNote.map((note) => {
+          {showNote.map(([date, note], i) => {
+            // console.log(note);
             return (
-              <Card title={0} bordered={false} style={{ marginBottom: "5%" }}>
+              <Card
+                bordered={false}
+                style={{ marginBottom: "5%" }}
+                key={i}
+                title={date}
+              >
                 <p>{note}</p>
               </Card>
             );

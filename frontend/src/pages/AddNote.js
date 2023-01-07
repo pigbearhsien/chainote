@@ -35,6 +35,7 @@ function AddNote() {
       content: "Pending...please wait for 2-5 minutes.",
       duration: 3,
     });
+
     setUpload({
       id: transaction.id,
       status: "pending",
@@ -42,13 +43,23 @@ function AddNote() {
       noteDate: pickDate,
       uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
     });
+
+    await alchemy.uploadNote(
+      ethereum,
+      account,
+      pickDate.split("-").join(""),
+      transaction.id
+    );
   };
 
   useEffect(() => {
+    // console.log("!", upload);
     if (upload.status === "pending") {
       clearInterval(ws);
       ws = setInterval(() => {
-        walletContext.pollStatus(upload.id).then((response) => {
+        arweave.pollStatus(upload.id).then((response) => {
+          // console.log(response);
+          // console.log(response.status === 200);
           if (response.status === 200) {
             setUpload({
               ...upload,
