@@ -51,11 +51,13 @@ function Notes({ login, setLogin }) {
   };
 
   useEffect(() => {
-    if (showNote[0]) console.log("show:", new Date(showNote[0][0]));
-    let sortNote = showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]));
+    // console.log(showNote[0][0]);
+    let sortNote = Array.from(
+      showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]))
+    );
     console.log("sorted", sortNote);
-    setShowNote(sortNote);
-  }, [showNote]);
+    setShowNote(() => sortNote);
+  }, [showNote.length]);
 
   const getNotes = async () => {
     await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
@@ -69,12 +71,6 @@ function Notes({ login, setLogin }) {
           getNote_arweave(item[0], item[1]);
         });
       });
-      // for (const i of arr) {
-      //   console.log(i, i[0][1]);
-      //   getNote_arweave(i[0][1]);
-      // }
-      // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
-      // setContent(txHash);
     });
   };
 
