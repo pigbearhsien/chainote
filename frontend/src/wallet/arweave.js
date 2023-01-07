@@ -9,8 +9,6 @@ import { mnemonicPhrase } from "./utils";
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
-
-    this.mnemonicPhrase = {};
   }
 
   generateArweaveWallet = async () => {
@@ -88,7 +86,7 @@ class ArweaveInterface {
     return encrypted.toString("base64");
   };
 
-  encryptByPrivateKey = async (plainText) => {
+  encryptByPrivateKey = async (plainText, private_key) => {
     /*
         static encrypt 有些錯誤，不能直接吃公鑰，
         這個 function 可以幫助私鑰轉成公鑰，同時進行加密。
@@ -101,10 +99,7 @@ class ArweaveInterface {
         +   2   個英文字 * 1 bytes = 2   bytes
                                   = 470 bytes
     */
-    this.mnemonicPhrase = mnemonicPhrase;
-    console.log(this.mnemonicPhrase);
-    console.log(typeof this.mnemonicPhrase);
-    const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
+    const privateKey_ = pj.jwk2pem(private_key);
 
     let result = "";
     for (let i = 0; i < plainText.length; i += 150) {
@@ -129,9 +124,8 @@ class ArweaveInterface {
     return result;
   };
 
-  decryptByPrivateKey = async (cipherText) => {
-    this.mnemonicPhrase = mnemonicPhrase;
-    const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
+  decryptByPrivateKey = async (cipherText, private_key) => {
+    const privateKey_ = pj.jwk2pem(private_key);
 
     let start = 0;
     let result = "";
@@ -159,14 +153,12 @@ class ArweaveInterface {
     return result;
   };
 
-  uploadOntoChain = async (encrypted) => {
-    const private_key = this.mnemonicPhrase;
-    console.log("priv:", private_key);
+  uploadOntoChain = async (encrypted, private_key) => {
     const transaction = await this.arweave.createTransaction(
       {
         data: Buffer.from(encrypted, "base64"),
       },
-      this.mnemonicPhrase
+      private_key
     );
 
     // console.log(transaction);
