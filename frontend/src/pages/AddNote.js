@@ -156,7 +156,7 @@ function AddNote() {
           disabled={upload.status === "pending"}
           onClick={() => handleUpload()}
         >
-          Add
+          {upload.status === "pending" ? "Uploading..." : "Add"}
         </Button>
       </Content>
     </Layout>
