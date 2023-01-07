@@ -13,8 +13,6 @@ function Notes({ login, setLogin }) {
   const { upload } = useContext(UploadContext);
   const alchemy = useContext(AlchemyContext);
 
-  // console.log(arweave.mnemonicPhrase);
-
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [content, setContent] = useState();
   // console.log(arweave.mnemonicPhrase);
@@ -34,7 +32,10 @@ function Notes({ login, setLogin }) {
     const transaction = await arweave.arweave.transactions.getData(txId);
     console.log(transaction);
     if (transaction) {
-      const decrypted = await arweave.decryptByPrivateKey(transaction);
+      const decrypted = await arweave.decryptByPrivateKey(
+        transaction,
+        JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      );
       setShowNote((prev) => [
         ...prev,
         [`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`, decrypted],
