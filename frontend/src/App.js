@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useContext, useState, createContext } from "react";
 import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
@@ -9,7 +9,7 @@ import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useApp } from "./UseApp";
-import { Layout, Calendar } from "antd";
+import { Layout } from "antd";
 import { useEffect } from "react";
 
 export const UploadContext = createContext({
@@ -47,12 +47,9 @@ function App() {
         <Layout>
           <NavBar setKey={setKey} setLogin={setLogin} />
           <Routes>
-            <Route
-              path="/"
-              element={<Notes login={login} setLogin={setLogin}></Notes>}
-            />
+            <Route path="/" element={<Notes></Notes>} />
             <Route path="/addNote" element={<AddNote />} />
-            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/calendar" element={<CalendarView />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>

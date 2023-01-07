@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
-import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
-
-import { AlchemyContext, WalletContext } from "..";
+import { useApp } from "../UseApp";
+import { WalletContext } from "..";
 import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
@@ -23,19 +22,19 @@ function AddNote() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [content, setContent] = useState("");
 
-  const arweave = useContext(WalletContext);
-  const alchemy = useContext(AlchemyContext);
+  const walletContext = useContext(WalletContext);
   const { upload, setUpload } = useContext(UploadContext);
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
   const handleUpload = async () => {
-    const encrypted = await arweave.encryptByPrivateKey(content);
-    const transaction = await arweave.uploadOntoChain(encrypted);
-
+    const encrypted = await walletContext.encryptByPrivateKey(content);
+    const transaction = await walletContext.uploadOntoChain(encrypted);
+    message.loading({
+      content: "Pending...please wait for 2-5 minutes.",
+      duration: 3,
+    });
     setUpload({
       id: transaction.id,
       status: "pending",
@@ -43,22 +42,13 @@ function AddNote() {
       noteDate: pickDate,
       uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
     });
-
-    await alchemy.uploadNote(
-      ethereum,
-      account,
-      dayjs().format("YYYYMMDD"),
-      transaction.id
-    );
   };
 
   useEffect(() => {
-    console.log("!", upload);
     if (upload.status === "pending") {
+      clearInterval(ws);
       ws = setInterval(() => {
-        arweave.pollStatus(upload.id).then((response) => {
-          console.log(response);
-          console.log(response.status === 200);
+        walletContext.pollStatus(upload.id).then((response) => {
           if (response.status === 200) {
             setUpload({
               ...upload,
@@ -69,7 +59,12 @@ function AddNote() {
         });
       }, 10000);
     } else if (upload.status === "complete") {
+      message.success({ content: "This note is on chain now!", duration: 2 });
       clearInterval(ws);
+      setUpload({
+        ...upload,
+        status: "",
+      });
     }
   }, [upload]);
 
@@ -136,10 +131,8 @@ function AddNote() {
             borderRadius: "50px",
             marginTop: "5%",
             width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
           }}
+          disabled={upload.status === "pending"}
           onClick={() => handleUpload()}
         >
           Add

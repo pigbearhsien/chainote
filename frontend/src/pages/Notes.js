@@ -1,49 +1,41 @@
-import React, { useContext } from "react";
-import { useMetaMask } from "metamask-react";
-import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
-import { useState, useEffect } from "react";
+import React from "react";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  DownCircleOutlined,
+} from "@ant-design/icons";
+import {
+  List,
+  Space,
+  Layout,
+  Button,
+  Tabs,
+  Card,
+  Divider,
+  message,
+} from "antd";
+import { useState, useEffect, useContext } from "react";
+import { WalletContext } from "..";
 import { UploadContext } from "../App";
-import { WalletContext, AlchemyContext } from "..";
-// import * as ethers from "ethers";
 
 const { Header, Content } = Layout;
 
-function Notes({ login, setLogin }) {
-  const arweave = useContext(WalletContext);
+function Notes() {
+  const test = "XNqurUPOUgdBU2wnTvQgvWhkeO3icONiamWoqDiWGS0";
+  const walletContext = useContext(WalletContext);
+
   const { upload } = useContext(UploadContext);
-  const alchemy = useContext(AlchemyContext);
-
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-  const [content, setContent] = useState();
-  // console.log(arweave.mnemonicPhrase);
-
   const [showNote, setShowNote] = useState([]);
 
-  const getNote_arweave = async (txId) => {
-    const transaction = await arweave.arweave.transactions.getData(txId);
-    const decrypted = await arweave.decryptByPrivateKey(transaction);
+  const getNote = async (txId) => {
+    const transaction = await walletContext.arweave.transactions.getData(txId);
+    const decrypted = await walletContext.decryptByPrivateKey(transaction);
     setShowNote([...showNote, decrypted]);
   };
 
-  const getNotes = () => {
-    alchemy.getNotes(ethereum, account, 5).then((encodedResult) => {
-      const arr = alchemy.interface.decodeFunctionResult(
-        alchemy.interface.functions["getNotes(uint256)"],
-        encodedResult
-      );
-      console.log(arr);
-      for (const i of arr) {
-        console.log(i, i[0][1]);
-        getNote_arweave(i[0][1]);
-      }
-      // alchemy.alchemy.ws.once(txHash, (tx) => console.log(tx));
-      // setContent(txHash);
-    });
-  };
-
   useEffect(() => {
-    // console.log(content);
-  }, [content]);
+    getNote(test);
+  }, []);
 
   return (
     <Layout className="site-layout">
@@ -86,7 +78,7 @@ function Notes({ login, setLogin }) {
           style={{ color: "white", borderTop: "3px white" }}
           plain
         >
-          January
+          Latest 20 notes
         </Divider>
         <div className="site-card-border-less-wrapper">
           {showNote.map((note) => {
@@ -97,19 +89,6 @@ function Notes({ login, setLogin }) {
             );
           })}
         </div>
-        <Button
-          style={{
-            borderRadius: "50px",
-            marginTop: "5%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={getNotes}
-        >
-          Fetch Notes
-        </Button>
       </Content>
     </Layout>
   );
