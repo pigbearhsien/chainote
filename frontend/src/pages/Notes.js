@@ -13,23 +13,26 @@ function Notes({ login, setLogin }) {
   const { upload } = useContext(UploadContext);
   const alchemy = useContext(AlchemyContext);
 
+  // console.log(arweave.mnemonicPhrase);
+
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [content, setContent] = useState();
   // console.log(arweave.mnemonicPhrase);
 
   const [showNote, setShowNote] = useState([]);
 
-  useEffect(() => {
-    console.log(upload);
-  }, [upload]);
+  // useEffect(() => {
+  //   console.log(upload);
+  // }, [upload]);
 
-  useEffect(() => {
-    console.log(showNote);
-  }, [showNote]);
+  // useEffect(() => {
+  //   console.log(showNote);
+  // }, [showNote]);
 
   const getNote_arweave = async (date, txId) => {
     console.log(date);
     const transaction = await arweave.arweave.transactions.getData(txId);
+    console.log(transaction);
     const decrypted = await arweave.decryptByPrivateKey(transaction);
     setShowNote((prev) => [...prev, [date, decrypted]]);
   };

@@ -11,11 +11,7 @@ import { mnemonicPhrase } from "./utils";
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
-    this.mnemonicPhrase = mnemonicPhrase;
-
-    console.log(this.mnemonicPhrase);
-
-    // console.log(this.mnemonicPhrase);
+    this.mnemonicPhrase = "0x";
   }
 
   generateArweaveWallet = async () => {
