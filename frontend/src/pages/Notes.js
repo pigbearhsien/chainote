@@ -33,8 +33,21 @@ function Notes({ login, setLogin }) {
     console.log(date);
     const transaction = await arweave.arweave.transactions.getData(txId);
     console.log(transaction);
-    const decrypted = await arweave.decryptByPrivateKey(transaction);
-    setShowNote((prev) => [...prev, [date, decrypted]]);
+    if (transaction) {
+      const decrypted = await arweave.decryptByPrivateKey(transaction);
+      setShowNote((prev) => [
+        ...prev,
+        [`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`, decrypted],
+      ]);
+    } else {
+      setShowNote((prev) => [
+        ...prev,
+        [
+          `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
+          "<Now pending...>",
+        ],
+      ]);
+    }
   };
 
   const getNotes = async () => {
@@ -45,7 +58,7 @@ function Notes({ login, setLogin }) {
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      // console.log(arr);
+      console.log(arr);
       arr.map((element) => {
         element.map((item) => {
           getNote_arweave(item[0], item[1]);
@@ -111,7 +124,7 @@ function Notes({ login, setLogin }) {
           style={{ color: "white", borderTop: "3px white" }}
           plain
         >
-          January
+          Latest 20 notes
         </Divider>
         <div className="site-card-border-less-wrapper">
           {showNote.map(([date, note], i) => {

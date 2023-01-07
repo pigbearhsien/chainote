@@ -6,12 +6,11 @@ import * as pj from "pem-jwk";
 import { assert } from "console";
 import { mnemonicPhrase } from "./utils";
 
-// console.log("get:", mnemonicPhrase);
-
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
-    this.mnemonicPhrase = "0x";
+
+    this.mnemonicPhrase = {};
   }
 
   generateArweaveWallet = async () => {
@@ -102,7 +101,10 @@ class ArweaveInterface {
         +   2   個英文字 * 1 bytes = 2   bytes
                                   = 470 bytes
     */
-    const privateKey_ = pj.jwk2pem(mnemonicPhrase);
+    this.mnemonicPhrase = mnemonicPhrase;
+    console.log(this.mnemonicPhrase);
+    console.log(typeof this.mnemonicPhrase);
+    const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
 
     let result = "";
     for (let i = 0; i < plainText.length; i += 150) {
@@ -128,6 +130,7 @@ class ArweaveInterface {
   };
 
   decryptByPrivateKey = async (cipherText) => {
+    this.mnemonicPhrase = mnemonicPhrase;
     const privateKey_ = pj.jwk2pem(this.mnemonicPhrase);
 
     let start = 0;
@@ -163,7 +166,7 @@ class ArweaveInterface {
       {
         data: Buffer.from(encrypted, "base64"),
       },
-      private_key
+      this.mnemonicPhrase
     );
 
     // console.log(transaction);
