@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
+import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
 import { useApp } from "../UseApp";
-import { WalletContext } from "..";
+import { WalletContext, AlchemyContext } from "..";
 import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
@@ -19,11 +20,14 @@ const disabledDate = (current) => {
 let ws;
 
 function AddNote() {
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
+  const alchemy = useContext(AlchemyContext);
+  const walletContext = useContext(WalletContext);
+  const { upload, setUpload } = useContext(UploadContext);
+
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [content, setContent] = useState("");
 
-  const walletContext = useContext(WalletContext);
-  const { upload, setUpload } = useContext(UploadContext);
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
@@ -57,7 +61,7 @@ function AddNote() {
     if (upload.status === "pending") {
       clearInterval(ws);
       ws = setInterval(() => {
-        arweave.pollStatus(upload.id).then((response) => {
+        walletContext.pollStatus(upload.id).then((response) => {
           // console.log(response);
           // console.log(response.status === 200);
           if (response.status === 200) {

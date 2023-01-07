@@ -51,8 +51,8 @@ class AlchemyInterface {
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_call",
+      params: [params],
     });
   };
 
@@ -60,14 +60,14 @@ class AlchemyInterface {
     const params = {
       from: from,
       to: this.smartContract,
-      data: this.interface.encodeFunctionData("uploadNote", [
+      data: this.interface.encodeFunctionData("uploadNotes", [
         date.toString(),
         noteAddress,
       ]),
     };
     return await ethereum.request({
-      method: "eth_sendTransation",
-      params: params,
+      method: "eth_sendTransaction",
+      params: [params],
     });
   };
 
