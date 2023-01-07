@@ -53,6 +53,15 @@ html {
   background-color: white !important;
   color: black;
 }
+.ant-btn:disabled {
+  color: white;
+}
+.ant-btn:disabled:hover {
+  color: white;
+}
+.ant-btn:disabled:hover span {
+  color: white;
+}
 
 .ant-btn:hover {
   color: black !important;
