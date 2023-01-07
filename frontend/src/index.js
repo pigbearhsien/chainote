@@ -15,7 +15,7 @@ export const WalletContext = createContext(arweave);
 
 const abi = _abi;
 const alchemy = new AlchemyInterface(
-  "0x1f41e5deeDA912B03eC8A3b2b7a131F0B2d3Da9A",
+  "0x45dFFf343C2aFC767d8f7bd324068a67471E9aa3",
   abi
 );
 export const AlchemyContext = createContext(alchemy);
