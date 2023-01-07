@@ -89,6 +89,14 @@ function AddNote() {
     }
   }, [upload]);
 
+  useEffect(() => {
+    if (upload.status === "pending")
+      message.loading({
+        content: "Pending...please wait for 2-5 minutes.",
+        duration: 3,
+      });
+  }, []);
+
   return (
     <Layout className="site-layout">
       <Content
