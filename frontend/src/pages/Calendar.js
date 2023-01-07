@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useMetaMask } from "metamask-react";
-import { Layout, Calendar, Button, Modal } from "antd";
+import { Layout, Calendar, Button, Modal, Card } from "antd";
 import { WalletContext, AlchemyContext } from "..";
 
 const { Header, Content } = Layout;
@@ -58,7 +58,10 @@ function CalendarView() {
     const transaction = await arweave.arweave.transactions.getData(txId);
     console.log(transaction);
     if (transaction) {
-      const decrypted = await arweave.decryptByPrivateKey(transaction);
+      const decrypted = await arweave.decryptByPrivateKey(
+        transaction,
+        JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      );
       setRealdata((prev) => [
         ...prev,
         {
@@ -157,7 +160,7 @@ function CalendarView() {
           onCancel={handleCancel}
         >
           {modalFocus.content.map((item) => (
-            <p>{item}</p>
+            <Card style={{ marginBottom: 30 }}>{item}</Card>
           ))}
         </Modal>
         <Calendar

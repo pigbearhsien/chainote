@@ -5,6 +5,7 @@ import logo from "../img/ChainNote_white.png";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { WalletContext } from "..";
+import { mnemonicPhrase } from "../wallet/utils";
 
 const { Header, Content } = Layout;
 
@@ -12,11 +13,11 @@ const Login = ({ setLogin }) => {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
 
-  const context = useContext(WalletContext);
-  context.mnemonicPhrase = recoveryPhrase;
+  // const context = useContext(WalletContext);
 
   useEffect(() => {
-    context.mnemonicPhrase = recoveryPhrase;
+    if (typeof recoveryPhrase === "object")
+      localStorage.setItem("mnemonicPhrase", JSON.stringify(recoveryPhrase));
   }, [recoveryPhrase]);
 
   // console.log(status);
@@ -101,7 +102,6 @@ const Login = ({ setLogin }) => {
         >
           <Button
             icon={<UploadOutlined />}
-            // onClick={() => connect()}
             style={{
               borderRadius: "50px",
               width: "330px",

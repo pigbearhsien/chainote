@@ -33,8 +33,14 @@ function AddNote() {
   };
 
   const handleUpload = async () => {
-    const encrypted = await walletContext.encryptByPrivateKey(content);
-    const transaction = await walletContext.uploadOntoChain(encrypted);
+    const encrypted = await walletContext.encryptByPrivateKey(
+      content,
+      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+    );
+    const transaction = await walletContext.uploadOntoChain(
+      encrypted,
+      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+    );
     message.loading({
       content: "Pending...please wait for 2-5 minutes.",
       duration: 3,
@@ -158,7 +164,7 @@ function AddNote() {
           disabled={upload.status === "pending"}
           onClick={() => handleUpload()}
         >
-          Add
+          {upload.status === "pending" ? "Uploading..." : "Add"}
         </Button>
       </Content>
     </Layout>
