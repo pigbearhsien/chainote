@@ -1,29 +1,15 @@
-import React from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
-import {
-  List,
-  Space,
-  Layout,
-  Button,
-  Tabs,
-  Card,
-  Divider,
-  message,
-} from "antd";
-import { useState, useEffect, useContext } from "react";
-import { WalletContext } from "..";
+import React, { useContext } from "react";
+import { useMetaMask } from "metamask-react";
+import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
+import { useState, useEffect } from "react";
 import { UploadContext } from "../App";
+import { WalletContext, AlchemyContext } from "..";
+// import * as ethers from "ethers";
 
 const { Header, Content } = Layout;
 
-function Notes() {
-  const test = "XNqurUPOUgdBU2wnTvQgvWhkeO3icONiamWoqDiWGS0";
-  const walletContext = useContext(WalletContext);
-
+function Notes({ login, setLogin }) {
+  const arweave = useContext(WalletContext);
   const { upload } = useContext(UploadContext);
   const alchemy = useContext(AlchemyContext);
 
@@ -47,8 +33,21 @@ function Notes() {
     console.log(date);
     const transaction = await arweave.arweave.transactions.getData(txId);
     console.log(transaction);
-    const decrypted = await arweave.decryptByPrivateKey(transaction);
-    setShowNote((prev) => [...prev, [date, decrypted]]);
+    if (transaction) {
+      const decrypted = await arweave.decryptByPrivateKey(transaction);
+      setShowNote((prev) => [
+        ...prev,
+        [`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`, decrypted],
+      ]);
+    } else {
+      setShowNote((prev) => [
+        ...prev,
+        [
+          `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
+          "<Now pending...>",
+        ],
+      ]);
+    }
   };
 
   const getNotes = async () => {
@@ -57,7 +56,7 @@ function Notes() {
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      // console.log(arr);
+      console.log(arr);
       arr.map((element) => {
         element.map((item) => {
           getNote_arweave(item[0], item[1]);
@@ -140,6 +139,19 @@ function Notes() {
             );
           })}
         </div>
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "5%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={getNotes}
+        >
+          Fetch Notes
+        </Button>
       </Content>
     </Layout>
   );
