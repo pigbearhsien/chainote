@@ -50,6 +50,13 @@ function Notes({ login, setLogin }) {
     }
   };
 
+  useEffect(() => {
+    if (showNote[0]) console.log("show:", new Date(showNote[0][0]));
+    let sortNote = showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]));
+    console.log("sorted", sortNote);
+    setShowNote(sortNote);
+  }, [showNote]);
+
   const getNotes = async () => {
     await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
       const arr = alchemy.interface.decodeFunctionResult(
