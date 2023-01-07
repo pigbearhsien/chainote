@@ -33,7 +33,9 @@ function AddNote() {
   };
 
   const handleUpload = async () => {
+    console.log(arweave.mnemonicPhrase);
     const encrypted = await arweave.encryptByPrivateKey(content);
+    console.log(encrypted);
     const transaction = await arweave.uploadOntoChain(encrypted);
     setUpload({
       id: transaction.id,

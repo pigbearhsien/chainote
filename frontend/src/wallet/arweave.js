@@ -158,7 +158,7 @@ class ArweaveInterface {
 
   uploadOntoChain = async (encrypted) => {
     const private_key = this.mnemonicPhrase;
-    // console.log("priv:", private_key);
+    console.log("priv:", private_key);
     const transaction = await this.arweave.createTransaction(
       {
         data: Buffer.from(encrypted, "base64"),

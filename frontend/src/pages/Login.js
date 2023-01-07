@@ -101,7 +101,6 @@ const Login = ({ setLogin }) => {
         >
           <Button
             icon={<UploadOutlined />}
-            // onClick={() => connect()}
             style={{
               borderRadius: "50px",
               width: "330px",
