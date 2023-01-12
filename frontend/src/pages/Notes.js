@@ -1,17 +1,16 @@
 import React, { useContext } from "react";
 import { useMetaMask } from "metamask-react";
-import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
+import { Layout, Button, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { UploadContext } from "../App";
-import { WalletContext, AlchemyContext } from "..";
+import { Web3Context } from "..";
 // import * as ethers from "ethers";
 
 const { Header, Content } = Layout;
 
 function Notes({ login, setLogin }) {
-  const arweave = useContext(WalletContext);
+  const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(UploadContext);
-  const alchemy = useContext(AlchemyContext);
 
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [content, setContent] = useState();
@@ -19,20 +18,10 @@ function Notes({ login, setLogin }) {
 
   const [showNote, setShowNote] = useState([]);
 
-  // useEffect(() => {
-  //   console.log(upload);
-  // }, [upload]);
-
-  // useEffect(() => {
-  //   console.log(showNote);
-  // }, [showNote]);
-
   const getNote_arweave = async (date, txId) => {
-    console.log(date);
-    const transaction = await arweave.arweave.transactions.getData(txId);
-    console.log(transaction);
+    const transaction = await database.arweave.transactions.getData(txId);
     if (transaction) {
-      const decrypted = await arweave.decryptByPrivateKey(
+      const decrypted = await database.decryptByPrivateKey(
         transaction,
         JSON.parse(localStorage.getItem("mnemonicPhrase"))
       );

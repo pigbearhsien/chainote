@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
-import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
-import { useState, useEffect } from "react";
-import { useApp } from "../UseApp";
+import { Layout } from "antd";
 
 const { Header, Content } = Layout;
 

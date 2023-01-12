@@ -8,9 +8,10 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useApp } from "./UseApp";
 import { Layout } from "antd";
 import { useEffect } from "react";
+import { useMetaMask } from "metamask-react";
+import { Web3Context } from ".";
 
 export const UploadContext = createContext({
   upload: {
@@ -25,8 +26,9 @@ export const UploadContext = createContext({
 
 function App() {
   const [login, setLogin] = useState(false);
+  const { status, ethereum } = useMetaMask();
+  const { database } = useContext(Web3Context);
   const { pathname } = useLocation();
-  const { setStatus, key, setKey } = useApp();
 
   const [upload, setUpload] = useState({
     id: "",
@@ -35,6 +37,12 @@ function App() {
     noteDate: "",
     uploadTime: "",
   });
+
+  useEffect(() => {
+    if (status === "connected") {
+      database.plugWeb3Provider(ethereum);
+    }
+  }, [ethereum]);
 
   if (login) {
     return (
@@ -45,7 +53,7 @@ function App() {
         }}
       >
         <Layout>
-          <NavBar setKey={setKey} setLogin={setLogin} />
+          <NavBar setLogin={setLogin} />
           <Routes>
             <Route path="/" element={<Notes></Notes>} />
             <Route path="/addNote" element={<AddNote />} />

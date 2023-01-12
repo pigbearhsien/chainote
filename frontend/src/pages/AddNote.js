@@ -2,9 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { DatePicker, List, Space, Layout, Button, message, Input } from "antd";
-import { useApp } from "../UseApp";
-import { WalletContext, AlchemyContext } from "..";
+import { DatePicker, Space, Layout, Button, message, Input } from "antd";
+import { Web3Context } from "..";
 import { UploadContext } from "../App";
 
 dayjs.extend(customParseFormat);
@@ -20,9 +19,7 @@ const disabledDate = (current) => {
 let ws;
 
 function AddNote() {
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-  const alchemy = useContext(AlchemyContext);
-  const walletContext = useContext(WalletContext);
+  const { database, alchemy } = useContext(Web3Context);
   const { upload, setUpload } = useContext(UploadContext);
 
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -33,11 +30,12 @@ function AddNote() {
   };
 
   const handleUpload = async () => {
-    const encrypted = await walletContext.encryptByPrivateKey(
+    const encrypted = await database.encryptByPrivateKey(
       content,
       JSON.parse(localStorage.getItem("mnemonicPhrase"))
     );
-    const transaction = await walletContext.uploadOntoChain(
+    console.log("encrypted:", encrypted);
+    const transaction = await database.uploadOntoChain(
       encrypted,
       JSON.parse(localStorage.getItem("mnemonicPhrase"))
     );
@@ -46,20 +44,22 @@ function AddNote() {
       duration: 3,
     });
 
-    setUpload({
-      id: transaction.id,
-      status: "pending",
-      content: content,
-      noteDate: pickDate,
-      uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
-    });
+    console.log(transaction);
 
-    await alchemy.uploadNote(
-      ethereum,
-      account,
-      pickDate.split("-").join(""),
-      transaction.id
-    );
+    // setUpload({
+    //   id: transaction.id,
+    //   status: "pending",
+    //   content: content,
+    //   noteDate: pickDate,
+    //   uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
+    // });
+
+    // await alchemy.uploadNote(
+    //   ethereum,
+    //   account,
+    //   pickDate.split("-").join(""),
+    //   transaction.id
+    // );
   };
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function AddNote() {
     if (upload.status === "pending") {
       clearInterval(ws);
       ws = setInterval(() => {
-        walletContext.pollStatus(upload.id).then((response) => {
+        database.pollStatus(upload.id).then((response) => {
           // console.log(response);
           // console.log(response.status === 200);
           if (response.status === 200) {

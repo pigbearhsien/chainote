@@ -1,20 +1,10 @@
 import React from "react";
-import { message } from "antd";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  DownCircleOutlined,
-} from "@ant-design/icons";
-import { List, Space, Layout, Button, Tabs, Card, Divider } from "antd";
-import { useState, useEffect } from "react";
-import { useApp } from "../UseApp";
+import { Layout } from "antd";
 import { useMetaMask } from "metamask-react";
 
 const { Header, Content } = Layout;
 
 function Settings({ setLogin }) {
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-
   return (
     <Layout className="site-layout">
       <Content
