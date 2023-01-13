@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
-import { useMetaMask } from "metamask-react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, Space, Layout, Button, message, Input } from "antd";
 import { Web3Context } from "..";
-import { UploadContext } from "../App";
+import { AddNoteContext } from "../App";
 
 dayjs.extend(customParseFormat);
 
@@ -20,16 +19,36 @@ let ws;
 
 function AddNote() {
   const { database, alchemy } = useContext(Web3Context);
-  const { upload, setUpload } = useContext(UploadContext);
+  const { upload, setUpload, signed } = useContext(AddNoteContext);
 
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [content, setContent] = useState("");
+  const [warning, setWarning] = useState(" ");
+
+  const [proceed, setProceed] = useState(false);
 
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
   const handleUpload = async () => {
+    if (signed === false) {
+      setWarning("Please click up Metamask and have our website signed! 🤖");
+      return;
+    }
+    if (content === "") {
+      setWarning("The content is empty. Do you sure you want to upload? 😲");
+      // 從 Add 變成 Proceed，整個 button trigger 的 function 會是一個 call back
+      setProceed(true);
+      return;
+    }
+    _upload();
+  };
+
+  const _upload = async () => {
+    if (proceed === true) {
+      setProceed(false);
+    }
     const encrypted = await database.encryptByPrivateKey(
       content,
       JSON.parse(localStorage.getItem("mnemonicPhrase"))
@@ -43,8 +62,6 @@ function AddNote() {
       content: "Pending...please wait for 2-5 minutes.",
       duration: 3,
     });
-
-    console.log(transaction);
 
     // setUpload({
     //   id: transaction.id,
@@ -147,7 +164,7 @@ function AddNote() {
             borderColor: "white",
             fontSize: "18px",
             fontFamily: "Iceberg",
-            height: "70%",
+            height: "60%",
             // boxShadow: "0 0 0 2px #828384",
           }}
           value={content}
@@ -155,17 +172,35 @@ function AddNote() {
             setContent(e.target.value);
           }}
         />
-        <Button
-          style={{
-            borderRadius: "50px",
-            marginTop: "5%",
-            width: "100%",
-          }}
-          disabled={upload.status === "pending"}
-          onClick={() => handleUpload()}
+        <div
+          style={{ display: "flex", color: "white", margin: "10px 0 10px 0" }}
         >
-          {upload.status === "pending" ? "Uploading..." : "Add"}
-        </Button>
+          {warning}
+        </div>
+        {proceed ? (
+          <Button
+            style={{
+              borderRadius: "50px",
+              marginTop: "15",
+              width: "100%",
+            }}
+            onClick={() => _upload()}
+          >
+            Proceed
+          </Button>
+        ) : (
+          <Button
+            style={{
+              borderRadius: "50px",
+              marginTop: "15",
+              width: "100%",
+            }}
+            disabled={upload.status === "pending"}
+            onClick={() => handleUpload()}
+          >
+            {upload.status === "pending" ? "Uploading..." : "Add"}
+          </Button>
+        )}
       </Content>
     </Layout>
   );

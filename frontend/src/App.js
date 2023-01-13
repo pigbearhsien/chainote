@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useMetaMask } from "metamask-react";
 import { Web3Context } from ".";
 
-export const UploadContext = createContext({
+export const AddNoteContext = createContext({
   upload: {
     id: "",
     status: "",
@@ -22,10 +22,13 @@ export const UploadContext = createContext({
     uploadTime: "",
   },
   setUpload: () => {},
+  signed: false,
+  setSigned: () => {},
 });
 
 function App() {
   const [login, setLogin] = useState(false);
+  const [signed, setSigned] = useState(false);
   const { status, ethereum } = useMetaMask();
   const { database } = useContext(Web3Context);
   const { pathname } = useLocation();
@@ -40,16 +43,18 @@ function App() {
 
   useEffect(() => {
     if (status === "connected") {
-      database.plugWeb3Provider(ethereum);
+      database.plugWeb3Provider(ethereum, () => setSigned(true));
     }
   }, [ethereum]);
 
-  if (login) {
+  if (login && signed) {
     return (
-      <UploadContext.Provider
+      <AddNoteContext.Provider
         value={{
           upload: upload,
           setUpload: setUpload,
+          signed: signed,
+          setSigned: setSigned,
         }}
       >
         <Layout>
@@ -62,10 +67,10 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>
-      </UploadContext.Provider>
+      </AddNoteContext.Provider>
     );
   } else {
-    return <Login login={login} setLogin={setLogin} />;
+    return <Login login={login} setLogin={setLogin} signed={signed} />;
   }
 }
 

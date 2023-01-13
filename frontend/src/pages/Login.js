@@ -9,7 +9,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
 
-const Login = ({ setLogin }) => {
+const Login = ({ setLogin, signed }) => {
   const { status, connect } = useMetaMask();
   const [recoveryPhrase, setRecoveryPhrase] = useState("");
 
@@ -24,14 +24,18 @@ const Login = ({ setLogin }) => {
     setRecoveryPhrase(JSON.parse(localStorage.getItem("mnemonicPhrase")));
   }, []);
 
+  console.log(signed);
+
   useEffect(() => {
     if (status === "connected") {
       if (typeof recoveryPhrase === "object" && "n" in recoveryPhrase) {
-        setLogin(true);
-        navigate("/");
+        if (signed === true) {
+          setLogin(true);
+          navigate("/");
+        }
       }
     }
-  }, [status, recoveryPhrase]);
+  }, [status, recoveryPhrase, signed]);
 
   return (
     <Content

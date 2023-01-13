@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useMetaMask } from "metamask-react";
 import { Layout, Button, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
-import { UploadContext } from "../App";
+import { AddNoteContext } from "../App";
 import { Web3Context } from "..";
 // import * as ethers from "ethers";
 
@@ -10,7 +10,7 @@ const { Header, Content } = Layout;
 
 function Notes({ login, setLogin }) {
   const { database, alchemy } = useContext(Web3Context);
-  const { upload } = useContext(UploadContext);
+  const { upload } = useContext(AddNoteContext);
 
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   const [content, setContent] = useState();

@@ -12,7 +12,7 @@ class BundlrInterface {
     // this.arweave = Arweave.init({});
   }
 
-  plugWeb3Provider = async (ethereum) => {
+  plugWeb3Provider = async (ethereum, callback) => {
     this.provider = new providers.Web3Provider(ethereum);
     this.bundlr = new WebBundlr(
       "https://devnet.bundlr.network",
@@ -22,6 +22,11 @@ class BundlrInterface {
         providerUrl: "https://rpc-mumbai.maticvigil.com",
       }
     );
+
+    await this.provider._ready();
+    this.bundlr.ready().then(() => {
+      callback();
+    });
   };
 
   encryptByPrivateKey = async (plainText, private_key) => {
@@ -92,8 +97,6 @@ class BundlrInterface {
   };
 
   uploadOntoChain = async (encrypted, _) => {
-    await this.provider._ready();
-    await this.bundlr.ready();
     // const uploader = this.bundlr.uploader.chunkedUploader;
     // const transactionOptions = {
     //   tags: [{ name: "Content-Type", value: "text/plain" }],
