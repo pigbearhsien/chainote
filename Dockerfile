@@ -3,6 +3,7 @@ FROM node:18-alpine
 COPY ./frontend ./frontend
 WORKDIR ./frontend
 RUN corepack enable
+RUN yarn
 RUN yarn build
 
 

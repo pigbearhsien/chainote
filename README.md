@@ -2,9 +2,6 @@
 
 run in docker:
 ```bash=
-# build production file
-cd frontend && yarn && yarn build && cd ..
-
 # build a docker image
 docker build -t chain-note-web .
 
