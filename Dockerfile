@@ -5,6 +5,7 @@ WORKDIR ./frontend
 RUN corepack enable
 RUN apk add git openssh
 RUN yes "" | ssh-keygen -t rsa -q -N ""
+RUN ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 RUN yarn
 RUN yarn build
 
