@@ -1,12 +1,18 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-EXPOSE 4000 8080
-
-COPY . /app
-WORKDIR /app
-
+COPY ./frontend ./frontend
+WORKDIR ./frontend
 RUN corepack enable
-RUN yarn install:prod
 RUN yarn build
 
-# CMD ["yarn", "build"]
+
+FROM node:18-alpine
+
+EXPOSE 3000
+
+RUN yarn global add serve
+RUN yarn cache clean --mirror
+COPY --from=0 ./frontend/build ./build
+
+
+CMD ["serve", "-s", "./build"]
