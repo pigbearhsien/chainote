@@ -8,11 +8,12 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useApp } from "./UseApp";
 import { Layout } from "antd";
 import { useEffect } from "react";
+import { useMetaMask } from "metamask-react";
+import { Web3Context } from ".";
 
-export const UploadContext = createContext({
+export const AddNoteContext = createContext({
   upload: {
     id: "",
     status: "",
@@ -21,12 +22,16 @@ export const UploadContext = createContext({
     uploadTime: "",
   },
   setUpload: () => {},
+  signed: false,
+  setSigned: () => {},
 });
 
 function App() {
   const [login, setLogin] = useState(false);
+  const [signed, setSigned] = useState(false);
+  const { status, ethereum } = useMetaMask();
+  const { database } = useContext(Web3Context);
   const { pathname } = useLocation();
-  const { setStatus, key, setKey } = useApp();
 
   const [upload, setUpload] = useState({
     id: "",
@@ -36,16 +41,24 @@ function App() {
     uploadTime: "",
   });
 
-  if (login) {
+  useEffect(() => {
+    if (status === "connected") {
+      database.plugWeb3Provider(ethereum, () => setSigned(true));
+    }
+  }, [ethereum]);
+
+  if (login && signed) {
     return (
-      <UploadContext.Provider
+      <AddNoteContext.Provider
         value={{
           upload: upload,
           setUpload: setUpload,
+          signed: signed,
+          setSigned: setSigned,
         }}
       >
         <Layout>
-          <NavBar setKey={setKey} setLogin={setLogin} />
+          <NavBar setLogin={setLogin} />
           <Routes>
             <Route path="/" element={<Notes></Notes>} />
             <Route path="/addNote" element={<AddNote />} />
@@ -54,10 +67,10 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>
-      </UploadContext.Provider>
+      </AddNoteContext.Provider>
     );
   } else {
-    return <Login login={login} setLogin={setLogin} />;
+    return <Login login={login} setLogin={setLogin} signed={signed} />;
   }
 }
 

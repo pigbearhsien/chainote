@@ -4,13 +4,11 @@ import { Buffer } from "buffer";
 import { base64converter } from "./utils";
 import * as pj from "pem-jwk";
 import { assert } from "console";
-import { mnemonicPhrase } from "./utils";
 
 class ArweaveInterface {
   constructor() {
     this.arweave = Arweave.init({});
   }
-
   generateArweaveWallet = async () => {
     /*
         return (jwk-interface)
