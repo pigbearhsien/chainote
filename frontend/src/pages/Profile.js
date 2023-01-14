@@ -8,6 +8,7 @@ import { useMetaMask } from "metamask-react";
 const { Header, Content } = Layout;
 
 function Profile() {
+
   const { alchemy } = useContext(Web3Context);
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState("");

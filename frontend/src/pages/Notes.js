@@ -14,7 +14,7 @@ function Notes() {
 
   const {account, ethereum } = useMetaMask();
   const [content, setContent] = useState();
-  // console.log(arweave.mnemonicPhrase);
+  console.log(ethereum.req);
 
   const [showNote, setShowNote] = useState([]);
 
@@ -52,7 +52,6 @@ function Notes() {
   }, [showNote.length]);
 
   const getNotes = async () => {
-    console.log("handling...");
     await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
       const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["getNotes(uint256)"],
@@ -66,11 +65,7 @@ function Notes() {
       });
     });
   };
-
-  // useEffect(() => {
-  // console.log(content);
-  // }, [content]);
-
+  
   return (
     <Layout className="site-layout">
       <Content

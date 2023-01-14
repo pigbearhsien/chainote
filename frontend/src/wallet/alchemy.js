@@ -12,8 +12,6 @@ class AlchemyInterface {
     this.smartContract = solidity_sc;
 
     this.interface = new ethers.utils.Interface(abid.output.abi);
-
-    console.log(this.interface);
   }
 
   getBalance = async (address) => {
@@ -86,8 +84,6 @@ class AlchemyInterface {
       params: [params],
     });
 
-    // console.log(this.interface.functions);
-
     const name = this.interface.decodeFunctionResult(
       this.interface.functions["getName()"],
       encoded_result
@@ -124,6 +120,7 @@ class AlchemyInterface {
   listenOnTransactionMined = (txHash) => {
     this.alchemy.ws.on(txHash, (tx) => console.log(tx));
   };
+  
 }
 
 export default AlchemyInterface;
