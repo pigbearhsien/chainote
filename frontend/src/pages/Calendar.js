@@ -9,38 +9,36 @@ const { Header, Content } = Layout;
 
 dayjs.extend(customParseFormat);
 
-// const fakedata = [
-//   { date: "2023-01-07", content: "bbb" },
-//   { date: "2023-01-07", content: "ccc" },
-//   { date: "2023-01-03", content: "ddd" },
-//   { date: "2022-12-25", content: "merry ch" },
-//   { date: "2022-12-25", content: "eeee" },
-//   { date: "2022-12-25", content: "happy" },
-// ];
-
 const disabledDate = (current) => {
   // Can not select days before today and today
   return current > dayjs().endOf("day");
 };
 
 function CalendarView() {
-  const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { database, alchemy } = useContext(Web3Context);
-  const onChange = (date, dateString) => {
-    setPickDate(date.format("YYYY-MM-DD"));
-  };
-
+  const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYYMM"));
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalFocus, setModalFocus] = useState({
     title: "",
     content: [],
   });
-  const [realdata, setRealdata] = useState([]);
+  const [data, setData] = useState([]);
+
+  const onChange = (date, dateString) => {
+    setPickDate(date.format("YYYY-MM-DD"));
+    monthToNotes(date.format("YYYYMM"));
+    if (date.format("YYYYMM") !== currentMonth) {
+      setData([]);
+      monthToNotes(date.format("YYYYMM"));
+      setCurrentMonth(date.format("YYYYMM"));
+    }
+  };
 
   const getListData = (value) => {
     let listData = [];
-    realdata.map((note) => {
-      console.log("compare:", note.date, value);
+    data.map((note) => {
+      //console.log("compare:", note.date, value);
       if (note.date === value) {
         listData.push(note.content);
       }
@@ -48,18 +46,16 @@ function CalendarView() {
     return listData;
   };
 
-  console.log("realdata:", realdata);
-
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const getNote_arweave = async (date, txId) => {
-    const transaction = await database.arweave.transactions.getData(txId);
+    const transaction = await database.database.transactions.getData(txId);
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
         JSON.parse(localStorage.getItem("mnemonicPhrase"))
       );
-      setRealdata((prev) => [
+      setData((prev) => [
         ...prev,
         {
           date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
@@ -67,7 +63,7 @@ function CalendarView() {
         },
       ]);
     } else {
-      setRealdata((prev) => [
+      setData((prev) => [
         ...prev,
         [
           {
@@ -81,7 +77,6 @@ function CalendarView() {
 
   const monthToNotes = (month) => {
     alchemy.monthToNotes(ethereum, account, month).then((encodedResult) => {
-      console.log(encodedResult, alchemy.interface.functions);
       const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["monthToNotes(uint256)"],
         encodedResult
@@ -94,15 +89,12 @@ function CalendarView() {
     });
   };
 
-  // console.log(ethereum);
-
   useEffect(() => {
-    // console.log("heelo");
     monthToNotes(dayjs().format("YYYYMM"));
   }, []);
 
   const viewNote = (e) => {
-    console.log(getListData(e.target.parentNode.value));
+    //console.log(getListData(e.target.parentNode.value));
     setModalFocus({
       title: e.target.parentNode.value,
       content: getListData(e.target.parentNode.value),
@@ -119,8 +111,6 @@ function CalendarView() {
 
   const dateCellRender = (value) => {
     const num = getListData(value.format("YYYY-MM-DD"));
-    console.log(num);
-    // console.log("a:", num, value);
     if (value < dayjs().endOf("day")) {
       return num.length !== 0 ? (
         <div
@@ -172,48 +162,3 @@ function CalendarView() {
   );
 }
 export default CalendarView;
-
-// const getMonthData = (value) => {
-//   if (value.month() === 8) {
-//     return "  ";
-//   } else {
-//     return "  ";
-//   }
-// };
-
-// const monthCellRender = (value) => {
-//   const num = getMonthData(value);
-//   return num ? (
-//     <div className="notes-month">
-//       <section>{num}</section>
-//     </div>
-//   ) : null;
-// };
-
-// switch (value) {
-//   case 8:
-//     listData = [
-//       {
-//         // type: "success",
-//       },
-//     ];
-//     break;
-//   case 10:
-//     listData = [
-//       {
-//         type: "warning",
-//       },
-//     ];
-//     break;
-//   case 15:
-//     listData = [
-//       {
-//         type: "error",
-//       },
-//     ];
-//     break;
-//   case 16:
-//     listData = [{ type: "error" }];
-//     break;
-//   default:
-// }
