@@ -25,6 +25,7 @@ class BundlrInterface {
     const {website, currency, providerUrl} = this.bundlr_conf;
 
     this.provider = new providers.Web3Provider(ethereum);
+    
     this.bundlr = new WebBundlr(
       website,
       currency,

@@ -1,9 +1,12 @@
-import React from "react";
-import { Layout } from "antd";
+import React, { useState } from "react";
+import { Layout, Button, Upload } from "antd";
 
 const { Header, Content } = Layout;
 
 function Profile() {
+
+  const [picture, setPicture] = useState(null)
+  
   return (
     <Layout className="site-layout">
       <Content
