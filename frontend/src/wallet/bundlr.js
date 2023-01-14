@@ -14,30 +14,29 @@ class BundlrInterface {
     this.bundlr_conf = {
       website: "https://devnet.bundlr.network",
       currency: "matic",
-      providerUrl: "https://rpc-mumbai.maticvigil.com"
-    }
+      providerUrl: "https://rpc-mumbai.maticvigil.com",
+    };
     this.axios = axios.create({
-      baseURL: 'https://arweave.net/'
-    })
+      baseURL: "https://arweave.net/",
+    });
   }
 
   plugWeb3Provider = async (ethereum, callback) => {
-    const {website, currency, providerUrl} = this.bundlr_conf;
+    const { website, currency, providerUrl } = this.bundlr_conf;
 
     this.provider = new providers.Web3Provider(ethereum);
-    this.bundlr = new WebBundlr(
-      website,
-      currency,
-      this.provider,
-      {
-        providerUrl: providerUrl,
-      }
-    );
+    this.bundlr = new WebBundlr(website, currency, this.provider, {
+      providerUrl: providerUrl,
+    });
 
     await this.provider._ready();
     this.bundlr.ready().then(() => {
       callback();
     });
+  };
+
+  getBundlrBalance = async () => {
+    return await this.bundlr.getLoadedBalance();
   };
 
   encryptByPrivateKey = async (plainText, private_key) => {
@@ -93,7 +92,7 @@ class BundlrInterface {
         }
         // console.log(sliced);
         const buffer = Buffer.from(sliced, "base64");
-        console.log(buffer, buffer.length)
+        console.log(buffer, buffer.length);
         const decrypted = crypto
           .privateDecrypt(privateKey_, buffer)
           .toString("utf8");
@@ -110,17 +109,19 @@ class BundlrInterface {
   uploadOntoChain = async (encrypted, _) => {
     const response = await this.bundlr.upload(encrypted);
 
-    console.log(response)
+    console.log(response);
 
     return response;
   };
 
   getData = async (tx_id) => {
-    const response = await this.axios.get(
-      tx_id
-    )
-    return response.data
-  }
+    const response = await this.axios.get(tx_id);
+    return response.data;
+  };
+
+  fund = async (fund) => {
+    await this.bundlr.fund(new BigNumber(fund).multipliedBy("1e18"));
+  };
 }
 
 export default BundlrInterface;
