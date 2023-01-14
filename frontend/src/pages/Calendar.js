@@ -3,20 +3,20 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useMetaMask } from "metamask-react";
 import { Layout, Calendar, Button, Modal, Card } from "antd";
-import { WalletContext, AlchemyContext } from "..";
+import { Web3Context } from "..";
 
 const { Header, Content } = Layout;
 
 dayjs.extend(customParseFormat);
 
-const fakedata = [
-  { date: "2023-01-07", content: "bbb" },
-  { date: "2023-01-07", content: "ccc" },
-  { date: "2023-01-03", content: "ddd" },
-  { date: "2022-12-25", content: "merry ch" },
-  { date: "2022-12-25", content: "eeee" },
-  { date: "2022-12-25", content: "happy" },
-];
+// const fakedata = [
+//   { date: "2023-01-07", content: "bbb" },
+//   { date: "2023-01-07", content: "ccc" },
+//   { date: "2023-01-03", content: "ddd" },
+//   { date: "2022-12-25", content: "merry ch" },
+//   { date: "2022-12-25", content: "eeee" },
+//   { date: "2022-12-25", content: "happy" },
+// ];
 
 const disabledDate = (current) => {
   // Can not select days before today and today
@@ -26,8 +26,7 @@ const disabledDate = (current) => {
 function CalendarView() {
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const Alchemy = useContext(AlchemyContext);
-  const arweave = useContext(WalletContext);
+  const { database, alchemy } = useContext(Web3Context);
   const onChange = (date, dateString) => {
     setPickDate(date.format("YYYY-MM-DD"));
   };
@@ -54,11 +53,9 @@ function CalendarView() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const getNote_arweave = async (date, txId) => {
-    console.log(date);
-    const transaction = await arweave.arweave.transactions.getData(txId);
-    console.log(transaction);
+    const transaction = await database.arweave.transactions.getData(txId);
     if (transaction) {
-      const decrypted = await arweave.decryptByPrivateKey(
+      const decrypted = await database.decryptByPrivateKey(
         transaction,
         JSON.parse(localStorage.getItem("mnemonicPhrase"))
       );
@@ -83,10 +80,10 @@ function CalendarView() {
   };
 
   const monthToNotes = (month) => {
-    Alchemy.monthToNotes(ethereum, account, month).then((encodedResult) => {
-      console.log(encodedResult, Alchemy.interface.functions);
-      const arr = Alchemy.interface.decodeFunctionResult(
-        Alchemy.interface.functions["monthToNotes(uint256)"],
+    alchemy.monthToNotes(ethereum, account, month).then((encodedResult) => {
+      console.log(encodedResult, alchemy.interface.functions);
+      const arr = alchemy.interface.decodeFunctionResult(
+        alchemy.interface.functions["monthToNotes(uint256)"],
         encodedResult
       );
       arr.map((element) => {

@@ -6,7 +6,10 @@
   "author": "Lawrence Tsai <tsailawrence812@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "cd frontend && yarn start"
+    "start": "cd frontend && yarn start",
+    "install:all": "cd frontend && yarn install",
+    "install:prod": "cd frontend && yarn install --freeze-lockfile ",
+    "build": "cd frontend && yarn build"
   },
   "dependencies": {
     "alchemy-sdk": "^2.2.5"

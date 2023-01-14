@@ -4,33 +4,33 @@ import App from "./App";
 import { AppProvider } from "./UseApp";
 import { BrowserRouter as Router } from "react-router-dom";
 import { MetaMaskProvider } from "metamask-react";
-import ArweaveInterface from "./wallet/arweave";
+import DatabaseInterface from "./wallet/bundlr";
 import AlchemyInterface from "./wallet/alchemy";
-import _abi from "./abi.json";
+import { abi, contract_addr } from "./contract/contract";
 // import AlchemyInterface from "./wallet/alchemy";
 
-const arweave = new ArweaveInterface();
-// console.log(arweave.mnemonicPhrase);
-export const WalletContext = createContext(arweave);
+const database = new DatabaseInterface();
+const alchemy = new AlchemyInterface(contract_addr, abi);
 
-const abi = _abi;
-const alchemy = new AlchemyInterface(
-  "0x45dFFf343C2aFC767d8f7bd324068a67471E9aa3",
-  abi
-);
-export const AlchemyContext = createContext(alchemy);
+export const Web3Context = createContext({
+  database: database,
+  alchemy: alchemy,
+});
+
+/*
+  我們現在要做的事情：先用 moralis 接上 metamask，
+  拿到 ethereum 之後，再拿這個 ethereum 包進 Web3Provider
+*/
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <WalletContext.Provider value={arweave}>
+  <Web3Context.Provider value={{ database: database, alchemy: alchemy }}>
     <MetaMaskProvider>
-      <AlchemyContext.Provider value={alchemy}>
-        <AppProvider>
-          <Router>
-            <App />
-          </Router>
-        </AppProvider>
-      </AlchemyContext.Provider>
+      <AppProvider>
+        <Router>
+          <App />
+        </Router>
+      </AppProvider>
     </MetaMaskProvider>
-  </WalletContext.Provider>
+  </Web3Context.Provider>
 );
