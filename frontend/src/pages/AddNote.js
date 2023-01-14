@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, Space, Layout, Button, message, Input } from "antd";
 import { Web3Context } from "..";
 import { AddNoteContext } from "../App";
+import { useMetaMask } from "metamask-react";
 
 dayjs.extend(customParseFormat);
 
@@ -20,6 +21,7 @@ let ws;
 function AddNote() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload, setUpload, signed } = useContext(AddNoteContext);
+  const {ethereum, account} = useMetaMask()
 
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [content, setContent] = useState("");
@@ -53,7 +55,6 @@ function AddNote() {
       content,
       JSON.parse(localStorage.getItem("mnemonicPhrase"))
     );
-    console.log("encrypted:", encrypted);
     const transaction = await database.uploadOntoChain(
       encrypted,
       JSON.parse(localStorage.getItem("mnemonicPhrase"))
@@ -63,56 +64,13 @@ function AddNote() {
       duration: 3,
     });
 
-    // setUpload({
-    //   id: transaction.id,
-    //   status: "pending",
-    //   content: content,
-    //   noteDate: pickDate,
-    //   uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
-    // });
-
-    // await alchemy.uploadNote(
-    //   ethereum,
-    //   account,
-    //   pickDate.split("-").join(""),
-    //   transaction.id
-    // );
+    await alchemy.uploadNote(
+      ethereum,
+      account,
+      pickDate.split("-").join(""),
+      transaction.id
+    );
   };
-
-  useEffect(() => {
-    // console.log("!", upload);
-    if (upload.status === "pending") {
-      clearInterval(ws);
-      ws = setInterval(() => {
-        database.pollStatus(upload.id).then((response) => {
-          // console.log(response);
-          // console.log(response.status === 200);
-          if (response.status === 200) {
-            setUpload({
-              ...upload,
-              status: "complete",
-            });
-          }
-          // 200: ok! 202: pending
-        });
-      }, 10000);
-    } else if (upload.status === "complete") {
-      message.success({ content: "This note is on chain now!", duration: 2 });
-      clearInterval(ws);
-      setUpload({
-        ...upload,
-        status: "",
-      });
-    }
-  }, [upload]);
-
-  useEffect(() => {
-    if (upload.status === "pending")
-      message.loading({
-        content: "Pending...please wait for 2-5 minutes.",
-        duration: 3,
-      });
-  }, []);
 
   return (
     <Layout className="site-layout">
