@@ -24,12 +24,11 @@ const Login = ({ setLogin, signed }) => {
     setRecoveryPhrase(JSON.parse(localStorage.getItem("mnemonicPhrase")));
   }, []);
 
-  console.log(signed);
 
   useEffect(() => {
     if (status === "connected") {
-      if (typeof recoveryPhrase === "object" && "n" in recoveryPhrase) {
-        if (signed === true) {
+      if (recoveryPhrase !== null) {
+        if ("n" in recoveryPhrase && signed === true) {
           setLogin(true);
           navigate("/");
         }
@@ -112,7 +111,7 @@ const Login = ({ setLogin, signed }) => {
 
             reader.onload = (e) => {
               // console.log(e.target.result);
-              setRecoveryPhrase(e.target.result);
+              setRecoveryPhrase(JSON.parse(e.target.result));
             };
             reader.readAsText(file);
 
@@ -134,7 +133,7 @@ const Login = ({ setLogin, signed }) => {
           </Button>
         </Upload>
         <div>
-          {recoveryPhrase === "" ? (
+          {recoveryPhrase === null ? (
             <div style={{ color: "#ffffff" }}>
               <img src={invalid_lg} style={{ height: 20 }} alt="" />
               Please upload your recovery phrase!
