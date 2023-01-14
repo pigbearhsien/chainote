@@ -26,7 +26,6 @@ const Login = ({ setLogin, signed }) => {
     setRecoveryPhrase(JSON.parse(localStorage.getItem("mnemonicPhrase")));
   }, []);
 
-
   useEffect(() => {
     if (status === "connected") {
       if (recoveryPhrase !== null) {

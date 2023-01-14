@@ -7,7 +7,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, message } from "antd";
+import { Layout, Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../UseApp";
 import logo from "../img/Chainote_white.png";
@@ -19,19 +19,6 @@ const { Sider } = Layout;
 function NavBar({ setLogin }) {
   const navigate = useNavigate();
   const { key, setKey, setSignIn, setStatus } = useApp();
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-
-  const handleLogOut = () => {
-    if (status === "connected")
-      message.error({
-        content: "You haven't disconnect your MeatMask.",
-        duration: 2,
-      });
-    else if (status === "notConnected") {
-      message.success({ content: "Logout successfully!", duration: 2 });
-      setLogin(false);
-    }
-  };
 
   function navigatePage(key) {
     setKey(key);
@@ -48,12 +35,12 @@ function NavBar({ setLogin }) {
       // case "4":
       //   navigate("/profile");
       //   break;
-      // case "5":
-      //   navigate("/settings");
-      //   break;
       case "4":
-        handleLogOut();
+        navigate("/settings");
         break;
+      // case "4":
+      //   handleLogOut();
+      //   break;
       default:
         navigate("/");
     }
@@ -140,26 +127,26 @@ function NavBar({ setLogin }) {
             //     borderRadius: 50,
             //   },
             // },
-            // {
-            //   key: "5",
-            //   icon: <SettingOutlined />,
-            //   label: "Settings",
-            //   style: {
-            //     height: 50,
-            //     fontSize: 16,
-            //     borderRadius: 50,
-            //   },
-            // },
             {
               key: "4",
-              icon: <LogoutOutlined />,
-              label: "Disconnect",
+              icon: <SettingOutlined />,
+              label: "Settings",
               style: {
                 height: 50,
                 fontSize: 16,
                 borderRadius: 50,
               },
             },
+            // {
+            //   key: "4",
+            //   icon: <LogoutOutlined />,
+            //   label: "Disconnect",
+            //   style: {
+            //     height: 50,
+            //     fontSize: 16,
+            //     borderRadius: 50,
+            //   },
+            // },
           ]}
         ></Menu>
       </Sider>
