@@ -10,7 +10,7 @@ import {
 import { Layout, Menu, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../UseApp";
-import logo from "../img/ChainNote_white.png";
+import logo from "../img/Chainote_white.png";
 
 import { useMetaMask } from "metamask-react";
 
