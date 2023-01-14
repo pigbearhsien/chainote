@@ -4,14 +4,12 @@ import * as ethers from "ethers";
 class AlchemyInterface {
   constructor(solidity_sc, abid) {
     const settings = {
-      apiKey: "gX8oD6a1FQzKHWOHC5CYpAjpRhajTcrE",
-      network: Network.ETH_GOERLI,
+      apiKey: "LjJCSTlwcAXibugbEPYq1QUW1e9qjFj7",
+      network: Network.MATIC_MUMBAI,
     };
 
     this.alchemy = new Alchemy(settings);
     this.smartContract = solidity_sc;
-
-    console.log(abid.output.abi);
 
     this.interface = new ethers.utils.Interface(abid.output.abi);
   }

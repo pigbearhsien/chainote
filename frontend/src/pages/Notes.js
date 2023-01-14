@@ -8,18 +8,20 @@ import { Web3Context } from "..";
 
 const { Header, Content } = Layout;
 
-function Notes({ login, setLogin }) {
+function Notes() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(AddNoteContext);
 
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
+  const {account, ethereum } = useMetaMask();
   const [content, setContent] = useState();
   // console.log(arweave.mnemonicPhrase);
 
   const [showNote, setShowNote] = useState([]);
 
-  const getNote_arweave = async (date, txId) => {
-    const transaction = await database.arweave.transactions.getData(txId);
+  const getNote_bundlr = async (date, txId) => {
+    // const transaction = await database.bundlr.
+    console.log(txId, 'D-HO_Eif8_PTNdHJGGdbEeNE0Tou6P4LcqODKkJ6_pQ')
+    const transaction = await database.getData(txId)
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
@@ -52,15 +54,14 @@ function Notes({ login, setLogin }) {
   const getNotes = async () => {
     console.log("handling...");
     await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
-      console.log(encodedResult);
       const arr = alchemy.interface.decodeFunctionResult(
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      console.log(arr);
+      console.log(arr)
       arr.map((element) => {
         element.map((item) => {
-          getNote_arweave(item[0], item[1]);
+          getNote_bundlr(item[0], item[1]);
         });
       });
     });
