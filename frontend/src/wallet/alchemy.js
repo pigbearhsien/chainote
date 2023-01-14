@@ -69,6 +69,37 @@ class AlchemyInterface {
     });
   };
 
+  getName = async (ethereum, from) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("getName", []),
+    };
+    const encoded_result = await ethereum.request({
+      method: "eth_call",
+      params: [params],
+    });
+
+    const name = alchemy.interface.decodeFunctionResult(
+      alchemy.interface.functions["getNotes(uint256)"],
+      encoded_result
+    );
+
+    return name
+  };
+
+  setName = async (ethereum, from, newName) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("setName", [newName]),
+    };
+    return await ethereum.request({
+      method: "eth_sendTransaction",
+      params: [params],
+    });
+  };
+
   listenOnTransactionPending = (who) => {
     const ws = this.alchemy.ws.on(
       {
