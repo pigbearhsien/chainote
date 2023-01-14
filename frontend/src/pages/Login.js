@@ -1,7 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useMetaMask } from "metamask-react";
+<<<<<<< Updated upstream
 import { Button, Checkbox, Form, Input, Layout, Upload, message } from "antd";
 import logo from "../img/ChainNote_white.png";
+=======
+import { Button, Layout, Upload } from "antd";
+import logo from "../img/Chainote_white.png";
+import invalid_lg from "../img/Login-invalid.png";
+import valid_lg from "../img/Login-valid.png";
+>>>>>>> Stashed changes
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { WalletContext } from "..";
