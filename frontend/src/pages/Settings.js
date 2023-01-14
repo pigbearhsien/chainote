@@ -1,7 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Layout, message, Button, Divider, Radio } from "antd";
+import {
+  Layout,
+  message,
+  Button,
+  Divider,
+  Radio,
+  InputNumber,
+  Space,
+} from "antd";
 import { useMetaMask } from "metamask-react";
 import * as ethers from "ethers";
+import { Web3Context } from "..";
 
 const { Header, Content } = Layout;
 
@@ -27,9 +36,15 @@ const chain = {
 };
 
 function Settings({ setLogin }) {
-  const { status } = useMetaMask();
+  const { status, account } = useMetaMask();
+  const { database, alchemy } = useContext(Web3Context);
 
   const [value, setValue] = useState(Number(window.ethereum.networkVersion));
+  const [fund, setFund] = useState(0);
+  const [warning, setWarning] = useState("  ");
+  const [balance, setBalance] = useState("");
+  const [metaBalance, setMetaBalance] = useState("");
+  const [rerender, setRerender] = useState(false);
 
   const onChange = (e) => {
     changeNetwork(e.target.value);
@@ -62,6 +77,37 @@ function Settings({ setLogin }) {
       }
     }
   };
+
+  const handleFund = async (fund) => {
+    alchemy.getBalance(account).then((result) => {
+      setMetaBalance(result.div(1e15).toNumber() / 1000);
+      console.log(metaBalance);
+    });
+    if (fund === null) {
+      setWarning("The amount cannot be empty.");
+      // 從 Add 變成 Proceed，整個 button trigger 的 function 會是一個 call back
+      return;
+    }
+    if (fund <= 0) {
+      setWarning("The amount must be higher than 0.");
+      return;
+    }
+    if (fund > metaBalance) {
+      setWarning("Insufficient balance in your metamask.");
+    }
+    await database.fund(fund);
+    setRerender((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setWarning("  ");
+  }, [fund]);
+
+  useEffect(() => {
+    database.getBundlrBalance().then((result) => {
+      setBalance(result.div(1e18).toNumber());
+    });
+  }, [rerender]);
 
   const handleLogOut = () => {
     if (status === "connected")
@@ -106,9 +152,9 @@ function Settings({ setLogin }) {
             marginBottom: "10px",
           }}
         >
-          <Radio value={5} style={{ color: "#ffffff" }}>
+          {/* <Radio value={5} style={{ color: "#ffffff" }}>
             Goerli Testnet
-          </Radio>
+          </Radio> */}
           <Radio value={80001} style={{ color: "#ffffff" }}>
             Mumbai Testnet
           </Radio>
@@ -116,12 +162,41 @@ function Settings({ setLogin }) {
             Polygon
           </Radio>
         </Radio.Group>
+        <Divider
+          orientation="left"
+          style={{ color: "white", borderTop: "3px white" }}
+          plain
+        >
+          Fund your database
+        </Divider>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Space>
+            <InputNumber min={0} value={fund} onChange={setFund} />
+            <Button type="primary" onClick={() => handleFund(fund)}>
+              Fund
+            </Button>
+          </Space>
+          <div style={{ display: "flex", color: "white" }}>
+            Your bundlr balance: {balance}
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            color: "white",
+            margin: "10px 0 10px 0",
+            fontSize: "15px",
+          }}
+        >
+          {warning}
+        </div>
         <Button
           onClick={() => handleLogOut()}
           style={{
             borderRadius: "50px",
             width: "100%",
             height: "50px",
+            marginTop: "40%",
           }}
         >
           Disconnect

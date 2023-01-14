@@ -12,7 +12,13 @@ class AlchemyInterface {
     this.smartContract = solidity_sc;
 
     this.interface = new ethers.utils.Interface(abid.output.abi);
+
+    console.log(this.interface);
   }
+
+  getBalance = async (address) => {
+    return await this.alchemy.core.getBalance(address);
+  };
 
   dateToNotes = async (ethereum, from, date) => {
     const params = {
@@ -80,12 +86,14 @@ class AlchemyInterface {
       params: [params],
     });
 
-    const name = alchemy.interface.decodeFunctionResult(
-      alchemy.interface.functions["getNotes(uint256)"],
+    // console.log(this.interface.functions);
+
+    const name = this.interface.decodeFunctionResult(
+      this.interface.functions["getName()"],
       encoded_result
     );
 
-    return name
+    return name;
   };
 
   setName = async (ethereum, from, newName) => {

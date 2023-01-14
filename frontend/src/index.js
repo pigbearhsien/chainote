@@ -9,6 +9,7 @@ import AlchemyInterface from "./wallet/alchemy";
 import { abi, contract_addr } from "./contract/contract";
 // import AlchemyInterface from "./wallet/alchemy";
 
+console.log(abi);
 const database = new DatabaseInterface();
 const alchemy = new AlchemyInterface(contract_addr, abi);
 
