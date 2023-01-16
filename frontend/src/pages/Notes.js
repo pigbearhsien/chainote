@@ -88,6 +88,19 @@ function Notes() {
         }}
       >
         <h1>Notes</h1>
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "5%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={getNotes}
+        >
+          Fetch Notes
+        </Button>
         {upload.status === "pending" ? (
           <>
             <Divider
@@ -135,19 +148,6 @@ function Notes() {
             );
           })}
         </div>
-        <Button
-          style={{
-            borderRadius: "50px",
-            marginTop: "5%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={getNotes}
-        >
-          Fetch Notes
-        </Button>
       </Content>
     </Layout>
   );
