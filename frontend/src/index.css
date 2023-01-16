@@ -49,11 +49,6 @@ html {
   color: black;
 }
 
-.ant-btn {
-  background-color: #05fdc1;
-  border: 0px;
-}
-
 .ant-btn-primary {
   background-color: white !important;
   color: black;
@@ -69,10 +64,9 @@ html {
 }
 
 .ant-btn:hover {
-  background-color: #05fdbfd0;
   color: black !important;
   border-color: white !important;
-  box-shadow: 0 0 0 1.5px gray;
+  box-shadow: 0 0 0 3px gray;
   /* border: 2px solid white; */
 }
 
@@ -233,10 +227,6 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.ant-radio-button-wrapper .ant-radio-button-wrapper-checked {
-  border-color: #dba083;
 }
 
 :where(
