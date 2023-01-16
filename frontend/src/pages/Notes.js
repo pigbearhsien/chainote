@@ -12,7 +12,7 @@ function Notes() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(AddNoteContext);
 
-  const {account, ethereum } = useMetaMask();
+  const { account, ethereum } = useMetaMask();
   const [content, setContent] = useState();
   // console.log(arweave.mnemonicPhrase);
 
@@ -20,8 +20,8 @@ function Notes() {
 
   const getNote_bundlr = async (date, txId) => {
     // const transaction = await database.bundlr.
-    console.log(txId, 'D-HO_Eif8_PTNdHJGGdbEeNE0Tou6P4LcqODKkJ6_pQ')
-    const transaction = await database.getData(txId)
+    // console.log(txId, 'D-HO_Eif8_PTNdHJGGdbEeNE0Tou6P4LcqODKkJ6_pQ')
+    const transaction = await database.getData(txId);
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
@@ -58,7 +58,7 @@ function Notes() {
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      console.log(arr)
+      console.log(arr);
       arr.map((element) => {
         element.map((item) => {
           getNote_bundlr(item[0], item[1]);

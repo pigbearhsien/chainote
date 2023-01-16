@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useMetaMask } from "metamask-react";
 import { Layout, Calendar, Button, Modal, Card } from "antd";
 import { Web3Context } from "..";
+import { SendOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
 
@@ -27,7 +28,6 @@ function CalendarView() {
 
   const onChange = (date, dateString) => {
     setPickDate(date.format("YYYY-MM-DD"));
-    monthToNotes(date.format("YYYYMM"));
     if (date.format("YYYYMM") !== currentMonth) {
       setData([]);
       monthToNotes(date.format("YYYYMM"));
@@ -49,7 +49,7 @@ function CalendarView() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const getNote_arweave = async (date, txId) => {
-    const transaction = await database.database.transactions.getData(txId);
+    const transaction = await database.getData(txId);
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
@@ -65,12 +65,10 @@ function CalendarView() {
     } else {
       setData((prev) => [
         ...prev,
-        [
-          {
-            date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
-            content: "<Now pending...>",
-          },
-        ],
+        {
+          date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
+          content: "<Now pending...>",
+        },
       ]);
     }
   };
@@ -90,6 +88,7 @@ function CalendarView() {
   };
 
   useEffect(() => {
+    setData([]);
     monthToNotes(dayjs().format("YYYYMM"));
   }, []);
 
@@ -99,13 +98,18 @@ function CalendarView() {
       title: e.target.parentNode.value,
       content: getListData(e.target.parentNode.value),
     });
-    setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  useEffect(() => {
+    if (modalFocus.content.length !== 0) {
+      setIsModalOpen(true);
+    }
+  }, [modalFocus]);
+
+  const handleShare = () => {
     setIsModalOpen(false);
   };
-  const handleCancel = () => {
+  const handleOk = () => {
     setIsModalOpen(false);
   };
 
@@ -143,13 +147,37 @@ function CalendarView() {
     <Layout className="site-layout">
       <div className="site-calendar-demo-card" style={{}}>
         <Modal
-          title={modalFocus.title}
           open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
+          title={[<div style={{ fontSize: 30 }}>{modalFocus.title}</div>]}
+          footer={[]}
+          closeIcon={[
+            <Button
+              key="Ok"
+              onClick={handleOk}
+              style={{
+                position: "relative",
+                right: 50,
+              }}
+            >
+              Close
+            </Button>,
+          ]}
+          width={"50%"}
         >
           {modalFocus.content.map((item) => (
-            <Card style={{ marginBottom: 30 }}>{item}</Card>
+            <>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Card
+                  style={{ marginBottom: 25, marginRight: 10, width: "100%" }}
+                >
+                  {item}
+                </Card>
+                <SendOutlined
+                  onClick={handleShare}
+                  style={{ marginBottom: 25 }}
+                />
+              </div>
+            </>
           ))}
         </Modal>
         <Calendar
