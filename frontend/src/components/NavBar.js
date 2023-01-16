@@ -5,7 +5,7 @@ import {
   FileAddOutlined,
   CalendarOutlined,
   SettingOutlined,
-  LogoutOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -38,9 +38,9 @@ function NavBar({ setLogin }) {
       case "5":
         navigate("/settings");
         break;
-      // case "4":
-      //   handleLogOut();
-      //   break;
+      case "6":
+        navigate("/contacts");
+        break;
       default:
         navigate("/");
     }
@@ -67,6 +67,7 @@ function NavBar({ setLogin }) {
       >
         <div
           className="logo"
+          onClick={() => navigatePage('/')}
           style={{
             display: "flex",
             justifyContent: "Center",
@@ -137,16 +138,16 @@ function NavBar({ setLogin }) {
                 borderRadius: 50,
               },
             },
-            // {
-            //   key: "4",
-            //   icon: <LogoutOutlined />,
-            //   label: "Disconnect",
-            //   style: {
-            //     height: 50,
-            //     fontSize: 16,
-            //     borderRadius: 50,
-            //   },
-            // },
+            {
+              key: "6",
+              icon: <BookOutlined />,
+              label: "Contacts",
+              style: {
+                height: 50,
+                fontSize: 16,
+                borderRadius: 50,
+              },
+            },
           ]}
         ></Menu>
       </Sider>

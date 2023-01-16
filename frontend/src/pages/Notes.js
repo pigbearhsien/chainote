@@ -13,14 +13,12 @@ function Notes() {
   const { upload } = useContext(AddNoteContext);
 
   const {account, ethereum } = useMetaMask();
-  const [content, setContent] = useState();
-  console.log(ethereum.req);
+  const [content, setContent] = useState("");
 
   const [showNote, setShowNote] = useState([]);
 
   const getNote_bundlr = async (date, txId) => {
     // const transaction = await database.bundlr.
-    console.log(txId, 'D-HO_Eif8_PTNdHJGGdbEeNE0Tou6P4LcqODKkJ6_pQ')
     const transaction = await database.getData(txId)
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
@@ -47,7 +45,6 @@ function Notes() {
     let sortNote = Array.from(
       showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]))
     );
-    console.log("sorted", sortNote);
     setShowNote(() => sortNote);
   }, [showNote.length]);
 
@@ -57,7 +54,6 @@ function Notes() {
         alchemy.interface.functions["getNotes(uint256)"],
         encodedResult
       );
-      console.log(arr)
       arr.map((element) => {
         element.map((item) => {
           getNote_bundlr(item[0], item[1]);

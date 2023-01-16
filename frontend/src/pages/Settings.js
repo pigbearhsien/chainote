@@ -176,7 +176,7 @@ function Settings({ setLogin }) {
               Fund
             </Button>
           </Space>
-          <div style={{ display: "flex", color: "white" }}>
+          <div style={{ display: "flex", color: "white", marginLeft: '20px' }}>
             Your bundlr balance: {balance}
           </div>
         </div>

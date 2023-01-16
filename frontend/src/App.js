@@ -7,6 +7,7 @@ import CalendarView from "./pages/Calendar";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
+import Contacts from "./pages/Contacts";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Layout } from "antd";
 import { useEffect } from "react";
@@ -65,6 +66,7 @@ function App() {
             <Route path="/calendar" element={<CalendarView />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/contacts" element={<Contacts />} />
           </Routes>
         </Layout>
       </AddNoteContext.Provider>

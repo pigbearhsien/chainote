@@ -5,6 +5,8 @@ const AppContext = createContext({
   status: {},
   me: "",
   signIn: false,
+  content: "",
+  setContent: () => {}
 });
 
 const AppProvider = (props) => {
@@ -13,6 +15,7 @@ const AppProvider = (props) => {
   const [id, setId] = useState("");
   const [me, setMe] = useState("");
   const [key, setKey] = useState("1");
+  const [content, setContent] = useState("")
 
   useEffect(() => {
     displayStatus(status);
@@ -50,6 +53,8 @@ const AppProvider = (props) => {
         setStatus,
         key,
         setKey,
+        content,
+        setContent
       }}
       {...props}
     />

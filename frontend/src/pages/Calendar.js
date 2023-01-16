@@ -49,7 +49,7 @@ function CalendarView() {
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
   const getNote_arweave = async (date, txId) => {
-    const transaction = await database.database.transactions.getData(txId);
+    const transaction = await database.getData(txId)
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
