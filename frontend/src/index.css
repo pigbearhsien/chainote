@@ -49,6 +49,11 @@ html {
   color: black;
 }
 
+.ant-btn {
+  background-color: #05fdc1;
+  border: 0px;
+}
+
 .ant-btn-primary {
   background-color: white !important;
   color: black;
@@ -64,9 +69,10 @@ html {
 }
 
 .ant-btn:hover {
+  background-color: #05fdbfd0;
   color: black !important;
   border-color: white !important;
-  box-shadow: 0 0 0 3px gray;
+  box-shadow: 0 0 0 1.5px gray;
   /* border: 2px solid white; */
 }
 
@@ -227,4 +233,107 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.ant-radio-button-wrapper .ant-radio-button-wrapper-checked {
+  border-color: #dba083;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-radio-button-wrapper-checked:not(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-radio-button-wrapper-disabled
+  ):first-child {
+  border-color: #05fdc1;
+  color: #03d6a1;
+}
+
+:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+.ant-select-focused:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-radio-button-wrapper-checked:not(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-radio-button-wrapper-disabled
+  )::before {
+  border-color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-in-view:is(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-picker-calendar.ant-picker-calendar-full
+      .ant-picker-cell-selected
+  )
+  .ant-picker-calendar-date,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-in-view:is(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-picker-calendar.ant-picker-calendar-full
+      .ant-picker-cell-selected
+  )
+  .ant-picker-calendar-date-today {
+  background-color: #ddfef5e0;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected
+  .ant-picker-calendar-date
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected:hover
+  .ant-picker-calendar-date
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected
+  .ant-picker-calendar-date-today
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected:hover
+  .ant-picker-calendar-date-today
+  .ant-picker-calendar-date-value {
+  color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-today {
+  border-color: #05fdc1;
 }
