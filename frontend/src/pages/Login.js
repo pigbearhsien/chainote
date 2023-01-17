@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect} from "react";
 import { useMetaMask } from "metamask-react";
 
 import { Button, Layout, Upload } from "antd";
@@ -8,23 +8,17 @@ import valid_lg from "../img/Login-valid.png";
 
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
+import { useApp } from "../UseApp";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
-const Login = ({ setLogin, signed }) => {
+const Login = () => {
   const { status, connect } = useMetaMask();
-  const [recoveryPhrase, setRecoveryPhrase] = useState("");
+
+  const {signed, recoveryPhrase, setRecoveryPhrase, setLogin} = useApp();
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (typeof recoveryPhrase === "object")
-      localStorage.setItem("mnemonicPhrase", JSON.stringify(recoveryPhrase));
-  }, [recoveryPhrase]);
-
-  useEffect(() => {
-    setRecoveryPhrase(JSON.parse(localStorage.getItem("mnemonicPhrase")));
-  }, []);
 
   useEffect(() => {
     if (status === "connected") {

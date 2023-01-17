@@ -3,7 +3,6 @@ import crypto from "crypto";
 import { Buffer } from "buffer";
 import BigNumber from "bignumber.js";
 import * as pj from "pem-jwk";
-import { assert } from "console";
 import { providers } from "ethers";
 import { WebBundlr } from "@bundlr-network/client";
 import axios from "axios";
@@ -89,20 +88,16 @@ class BundlrInterface {
     let result = "";
     for (let end = 0; end < cipherText.length; end++) {
       if (cipherText[end] === "|" || end === cipherText.length - 1) {
-        // console.log(start, end);
         let sliced;
         if (cipherText[end] === "|") {
           sliced = cipherText.slice(start, end);
         } else {
           sliced = cipherText.slice(start);
         }
-        // console.log(sliced);
         const buffer = Buffer.from(sliced, "base64");
-        console.log(buffer, buffer.length);
         const decrypted = crypto
           .privateDecrypt(privateKey_, buffer)
           .toString("utf8");
-        // console.log(decrypted);
         result += decrypted;
 
         start = end + 1;
@@ -114,8 +109,6 @@ class BundlrInterface {
 
   uploadOntoChain = async (encrypted, _) => {
     const response = await this.bundlr.upload(encrypted);
-
-    console.log(response);
 
     return response;
   };
