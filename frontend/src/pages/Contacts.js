@@ -80,7 +80,7 @@ function Contacts() {
       >
         <div style={{display: 'flex', alignItems: 'center', position: 'relative'}}>
           {mode !== 'view' ? <Button onClick={cancelContact} style={{backgroundColor: 'black', position: 'absolute', border: '0', left: '10px'}} icon={<ArrowLeftOutlined style={{color: 'white', fontSize: '20px'}} />} />: <></>}
-          <div style={{color: 'white', fontSize: '28px', width: '100%', textAlign: 'center'}}>Contacts</div>
+          <div style={{color: 'white', fontSize: '30px', width: '100%', textAlign: 'center'}}>Contacts</div>
         </div>
         <div className="Info">
           { mode === 'view' ?

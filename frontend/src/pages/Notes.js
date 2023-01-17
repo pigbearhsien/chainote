@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useMetaMask } from "metamask-react";
 import { Layout, Button, Card, Divider } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import { AddNoteContext } from "../App";
 import { Web3Context } from "..";
@@ -19,6 +20,12 @@ function Notes() {
   const [showNote, setShowNote] = useState({});
   const [noteList, setNoteList] = useState([])
 
+  const [status, setStatus] = useState({
+    active: false,
+    done: 0,
+    total: 1,
+  })
+
   const getNote_bundlr = async (date, txId) => {
     const transaction = await database.getData(txId)
     const _date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`
@@ -34,6 +41,9 @@ function Notes() {
     } else {
       resolved = [_date, "<Now pending...>"]
     }
+    setStatus((prev) => (
+      {...prev, done: prev.done + 1}
+    ))
     setShowNote((prev) => {
       const _new = Object.assign(new Object(), prev)
       _new[txId] = resolved
@@ -50,6 +60,12 @@ function Notes() {
       encodedResult
     );
 
+    setStatus({
+      active: true,
+      done: 0,
+      total: arr.length
+    })
+
     arr.map(element => (
       element.map(item => {
         // 有找到 txId (item[1]) 的從 local cache 中 pop 掉
@@ -59,7 +75,6 @@ function Notes() {
     ));
 
     const keys = Object.keys(localCache)
-    console.log('keys', keys)
     keys.map(item => {
       getNote_bundlr(localCache[item].date, item);
     })
@@ -77,6 +92,16 @@ function Notes() {
     );
     setNoteList(sortedNote);
   }, [showNote])
+
+  useEffect(() => {
+    if(status.done >= status.total) {
+      setStatus({
+        done: 0,
+        total: 1,
+        active: false,
+      })
+    }
+  }, [status])
   
   return (
     <Layout className="site-layout">
@@ -84,6 +109,7 @@ function Notes() {
         className="site-layout-background"
         style={{
           // margin: '24px 16px',
+          position: 'relative',
           padding: 24,
           paddingTop: 40,
           minHeight: 280,
@@ -94,7 +120,13 @@ function Notes() {
           //   filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2))",
         }}
       >
-        <h1>Notes</h1>
+        <div style={{display: 'flex', alignItems: 'center', position: 'relative'}}>
+          <div style={{color: 'white', fontSize: '30px', width: '100%', textAlign: 'center'}}>Notes</div>
+          { status.active ?
+            <div style={{position: 'absolute', color: 'white', marginLeft: '350px', marginTop: '15px'}}>{"(Loading...)"}</div> :
+            <></>
+          }
+        </div>
         <Button
           style={{
             borderRadius: "50px",
