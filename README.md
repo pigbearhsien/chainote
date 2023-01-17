@@ -24,4 +24,5 @@ docker tag chain-note-web <username>/chain-note-web:<version>
 docker push <username>/chain-note-web:<version>
 ```
 
-scutil --dns | grep 'nameserver\[[0-9]*\}'
+scutil --dns | grep 'nameserver\[[0-9]*\]'
+scutil: system configuration utility
