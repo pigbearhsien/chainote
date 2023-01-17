@@ -219,7 +219,6 @@ a {
 }
 .viewButton {
   margin-left: 3px;
-
   margin-right: 3px;
   margin-top: 3px;
   width: 50px;
@@ -229,7 +228,7 @@ a {
   align-items: center;
 }
 
-:where(
+/* :where(
     .css-dev-only-do-not-override-k83k30
   ).ant-radio-button-wrapper-checked:not(
     :where(
@@ -326,4 +325,4 @@ a {
   ).ant-picker-calendar.ant-picker-calendar-full
   .ant-picker-calendar-date-today {
   border-color: #05fdc1;
-}
+} */
