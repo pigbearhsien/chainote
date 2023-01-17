@@ -141,3 +141,6 @@ ehthumbs.db
 .Spotlight-V100
 .Trashes
 *.swp
+
+/frontend/yarn.lock
+/frontend/package-lock.json
