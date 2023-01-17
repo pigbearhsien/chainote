@@ -9,7 +9,7 @@ import { useApp } from "../UseApp";
 
 dayjs.extend(customParseFormat);
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { TextArea } = Input;
 
 const disabledDate = (current) => {
@@ -19,7 +19,7 @@ const disabledDate = (current) => {
 
 function AddNote() {
   const { database, alchemy } = useContext(Web3Context);
-  const { content, setContent } = useApp()
+  const { content, setContent, cacheNote, setCacheNote, recoveryPhrase } = useApp()
   const { ethereum, account} = useMetaMask()
 
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -53,31 +53,42 @@ function AddNote() {
     }
     const encrypted = await database.encryptByPrivateKey(
       content,
-      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      recoveryPhrase,
     );
     const transaction = await database.uploadOntoChain(
       encrypted,
-      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      recoveryPhrase,
     );
     message.loading({
       content: "Pending...please wait for 2-5 minutes.",
       duration: 3,
     });
 
-    const shared = contacts.list.filter((_, index) => contacts.chosen[index] === false)
+    const idx =  transaction.id;
+    const date = pickDate.split("-").join("");
+
+    const newCache = Object.assign(new Object(), cacheNote)
+    newCache[idx] = {
+      date: date,
+      content: encrypted,
+    }
+    setCacheNote(newCache)
+
+    const shared = contacts.list.filter((_, index) => contacts.chosen[index] === true)
+
     if (shared.length === 0) {
       await alchemy.uploadNote(
         ethereum,
         account,
-        pickDate.split("-").join(""),
-        transaction.id
+        date,
+        idx,
       );
     } else {
       await alchemy.uploadSharedNote(
         ethereum,
         [account, ...shared],
-        pickDate.split("-").join(""),
-        transaction.id
+        date,
+        idx,
       );
     }
   };
@@ -190,8 +201,6 @@ function AddNote() {
               contacts.list.map((item, index) => {
                 if (contacts.chosen[index] === true) {
                   return item.name + " ";
-                } else {
-                  return;
                 }
               }) +
             ">"}

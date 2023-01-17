@@ -25,13 +25,13 @@ export const Web3Context = createContext({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Web3Context.Provider value={{ database: database, alchemy: alchemy }}>
-    <MetaMaskProvider>
-      <AppProvider>
-        <Router>
-          <App />
-        </Router>
-      </AppProvider>
-    </MetaMaskProvider>
-  </Web3Context.Provider>
+    <Web3Context.Provider value={{ database: database, alchemy: alchemy }}>
+      <MetaMaskProvider>
+        <AppProvider>
+          <Router> 
+            <App />
+          </Router>
+          </AppProvider>
+      </MetaMaskProvider>
+    </Web3Context.Provider>
 );

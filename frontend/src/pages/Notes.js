@@ -4,65 +4,79 @@ import { Layout, Button, Card, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { AddNoteContext } from "../App";
 import { Web3Context } from "..";
+import { useApp } from "../UseApp";
 // import * as ethers from "ethers";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 function Notes() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(AddNoteContext);
 
-
   const { account, ethereum } = useMetaMask();
-  const [content, setContent] = useState();
-  // console.log(arweave.mnemonicPhrase);
+  const { cacheNote, setCacheNote, recoveryPhrase } = useApp();
 
-  const [showNote, setShowNote] = useState([]);
+  const [showNote, setShowNote] = useState({});
+  const [noteList, setNoteList] = useState([])
 
   const getNote_bundlr = async (date, txId) => {
     const transaction = await database.getData(txId)
+    const _date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`
 
+    // console.log('handling:', txId)
+    let resolved; 
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
-        JSON.parse(localStorage.getItem("mnemonicPhrase"))
+        recoveryPhrase
       );
-      setShowNote((prev) => [
-        ...prev,
-        [`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`, decrypted],
-      ]);
+      resolved = [_date, decrypted]
     } else {
-      setShowNote((prev) => [
-        ...prev,
-        [
-          `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
-          "<Now pending...>",
-        ],
-      ]);
+      resolved = [_date, "<Now pending...>"]
     }
+    setShowNote((prev) => {
+      const _new = Object.assign(new Object(), prev)
+      _new[txId] = resolved
+      return _new
+    })
+  };
+
+  const getNotes = async () => {
+    const encodedResult = await alchemy.getNotes(ethereum, account, 20)
+    const localCache = Object.assign(new Object(), cacheNote)
+
+    const arr = alchemy.interface.decodeFunctionResult(
+      alchemy.interface.functions["getNotes(uint256)"],
+      encodedResult
+    );
+
+    arr.map(element => (
+      element.map(item => {
+        // 有找到 txId (item[1]) 的從 local cache 中 pop 掉
+        getNote_bundlr(item[0], item[1])
+        delete localCache[item[1]];
+      })
+    ));
+
+    const keys = Object.keys(localCache)
+    console.log('keys', keys)
+    keys.map(item => {
+      getNote_bundlr(localCache[item].date, item);
+    })
+    // should look up on txId to see if there is cache.
+    setCacheNote(localCache);
   };
 
   useEffect(() => {
-    // console.log(showNote[0][0]);
-    let sortNote = Array.from(
-      showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]))
+    const _noteList = []
+    for(const key in showNote) {
+      _noteList.push(showNote[key])
+    }
+    const sortedNote = Array.from(
+      _noteList.sort((a, b) => new Date(b[0]) - new Date(a[0]))
     );
-    setShowNote(() => sortNote);
-  }, [showNote.length]);
-
-  const getNotes = async () => {
-    await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
-      const arr = alchemy.interface.decodeFunctionResult(
-        alchemy.interface.functions["getNotes(uint256)"],
-        encodedResult
-      );
-      arr.map((element) => {
-        element.map((item) => {
-          getNote_bundlr(item[0], item[1]);
-        });
-      });
-    });
-  };
+    setNoteList(sortedNote);
+  }, [showNote])
   
   return (
     <Layout className="site-layout">
@@ -127,7 +141,7 @@ function Notes() {
           Latest 20 notes
         </Divider>
         <div className="site-card-border-less-wrapper">
-          {showNote.map(([date, note], i) => {
+          {noteList.map(([date, note], i) => {
             // console.log(note);
             return (
               <Card

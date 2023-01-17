@@ -1,4 +1,4 @@
-import React, { useContext, useState, createContext } from "react";
+import React, { useState, createContext } from "react";
 import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
@@ -8,11 +8,9 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import Contacts from "./pages/Contacts";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
-import { useEffect } from "react";
-import { useMetaMask } from "metamask-react";
-import { Web3Context } from ".";
+import { useApp } from "./UseApp";
 
 export const AddNoteContext = createContext({
   upload: {
@@ -23,16 +21,10 @@ export const AddNoteContext = createContext({
     uploadTime: "",
   },
   setUpload: () => {},
-  signed: false,
-  setSigned: () => {},
 });
 
 function App() {
-  const [login, setLogin] = useState(false);
-  const [signed, setSigned] = useState(false);
-  const { status, ethereum } = useMetaMask();
-  const { database } = useContext(Web3Context);
-  const { pathname } = useLocation();
+  const {login, setLogin, signed} = useApp();
 
   const [upload, setUpload] = useState({
     id: "",
@@ -42,20 +34,12 @@ function App() {
     uploadTime: "",
   });
 
-  useEffect(() => {
-    if (status === "connected") {
-      database.plugWeb3Provider(ethereum, () => setSigned(true));
-    }
-  }, [ethereum]);
-
   if (login && signed) {
     return (
       <AddNoteContext.Provider
         value={{
           upload: upload,
           setUpload: setUpload,
-          signed: signed,
-          setSigned: setSigned,
         }}
       >
         <Layout>
@@ -72,7 +56,7 @@ function App() {
       </AddNoteContext.Provider>
     );
   } else {
-    return <Login login={login} setLogin={setLogin} signed={signed} />;
+    return <Login/>;
   }
 }
 
