@@ -49,11 +49,6 @@ html {
   color: black;
 }
 
-.ant-btn {
-  background-color: #05fdc1;
-  border: 0px;
-}
-
 .ant-btn-primary {
   background-color: white !important;
   color: black;
@@ -69,10 +64,9 @@ html {
 }
 
 .ant-btn:hover {
-  background-color: #05fdbfd0;
   color: black !important;
   border-color: white !important;
-  box-shadow: 0 0 0 1.5px gray;
+  box-shadow: 0 0 0 3px gray;
   /* border: 2px solid white; */
 }
 
@@ -225,7 +219,6 @@ a {
 }
 .viewButton {
   margin-left: 3px;
-
   margin-right: 3px;
   margin-top: 3px;
   width: 50px;
@@ -235,11 +228,7 @@ a {
   align-items: center;
 }
 
-.ant-radio-button-wrapper .ant-radio-button-wrapper-checked {
-  border-color: #dba083;
-}
-
-:where(
+/* :where(
     .css-dev-only-do-not-override-k83k30
   ).ant-radio-button-wrapper-checked:not(
     :where(
@@ -336,4 +325,4 @@ a {
   ).ant-picker-calendar.ant-picker-calendar-full
   .ant-picker-calendar-date-today {
   border-color: #05fdc1;
-}
+} */

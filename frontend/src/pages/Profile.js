@@ -67,6 +67,7 @@ function Profile() {
                   style={{ width: 100, marginLeft: 20 }}
                 />
                 <Button
+                  disabled={value === name}
                   onClick={() => editState("done")}
                   style={{ marginLeft: 10 }}
                 >
