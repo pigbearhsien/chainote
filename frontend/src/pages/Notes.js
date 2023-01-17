@@ -12,14 +12,16 @@ function Notes() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(AddNoteContext);
 
-  const {account, ethereum } = useMetaMask();
-  const [content, setContent] = useState("");
+
+  const { account, ethereum } = useMetaMask();
+  const [content, setContent] = useState();
+  // console.log(arweave.mnemonicPhrase);
 
   const [showNote, setShowNote] = useState([]);
 
   const getNote_bundlr = async (date, txId) => {
-    // const transaction = await database.bundlr.
     const transaction = await database.getData(txId)
+
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
@@ -79,6 +81,19 @@ function Notes() {
         }}
       >
         <h1>Notes</h1>
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "5%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={getNotes}
+        >
+          Fetch Notes
+        </Button>
         {upload.status === "pending" ? (
           <>
             <Divider
@@ -126,19 +141,6 @@ function Notes() {
             );
           })}
         </div>
-        <Button
-          style={{
-            borderRadius: "50px",
-            marginTop: "5%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={getNotes}
-        >
-          Fetch Notes
-        </Button>
       </Content>
     </Layout>
   );

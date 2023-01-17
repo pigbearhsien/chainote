@@ -2,10 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useMetaMask } from "metamask-react";
-import { Layout, Calendar, Button, Modal, Card } from "antd";
+import { Layout, Calendar, Button, Modal, Collapse } from "antd";
 import { Web3Context } from "..";
+import { SendOutlined } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
+const { Panel } = Collapse;
 
 dayjs.extend(customParseFormat);
 
@@ -21,13 +23,12 @@ function CalendarView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalFocus, setModalFocus] = useState({
     title: "",
-    content: [],
+    notes: [],
   });
   const [data, setData] = useState([]);
 
   const onChange = (date, dateString) => {
     setPickDate(date.format("YYYY-MM-DD"));
-    monthToNotes(date.format("YYYYMM"));
     if (date.format("YYYYMM") !== currentMonth) {
       setData([]);
       monthToNotes(date.format("YYYYMM"));
@@ -38,9 +39,8 @@ function CalendarView() {
   const getListData = (value) => {
     let listData = [];
     data.map((note) => {
-      //console.log("compare:", note.date, value);
       if (note.date === value) {
-        listData.push(note.content);
+        listData.push(note);
       }
     });
     return listData;
@@ -59,18 +59,18 @@ function CalendarView() {
         ...prev,
         {
           date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
+          title: "",
           content: decrypted,
         },
       ]);
     } else {
       setData((prev) => [
         ...prev,
-        [
-          {
-            date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
-            content: "<Now pending...>",
-          },
-        ],
+        {
+          date: `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
+          title: "",
+          content: "<Now pending...>",
+        },
       ]);
     }
   };
@@ -90,22 +90,29 @@ function CalendarView() {
   };
 
   useEffect(() => {
+    setData([]);
     monthToNotes(dayjs().format("YYYYMM"));
   }, []);
 
   const viewNote = (e) => {
-    //console.log(getListData(e.target.parentNode.value));
     setModalFocus({
       title: e.target.parentNode.value,
-      content: getListData(e.target.parentNode.value),
+      notes: getListData(e.target.parentNode.value),
     });
-    setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  useEffect(() => {
+    if (modalFocus.notes.length !== 0) {
+      setIsModalOpen(true);
+    }
+  }, [modalFocus]);
+
+  const genExtra = () => <SendOutlined onClick={handleShare} />;
+
+  const handleShare = () => {
+    console.log("share");
   };
-  const handleCancel = () => {
+  const handleOk = () => {
     setIsModalOpen(false);
   };
 
@@ -143,14 +150,38 @@ function CalendarView() {
     <Layout className="site-layout">
       <div className="site-calendar-demo-card" style={{}}>
         <Modal
-          title={modalFocus.title}
           open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
+          title={[<div style={{ fontSize: 30 }}>{modalFocus.title}</div>]}
+          footer={[
+            <Button key="Ok" onClick={handleOk}>
+              Close
+            </Button>,
+          ]}
+          closeIcon={[]}
+          width={"50%"}
         >
-          {modalFocus.content.map((item) => (
-            <Card style={{ marginBottom: 30 }}>{item}</Card>
-          ))}
+          <Collapse
+            bordered={false}
+            style={{ backgroundColor: "white" }}
+            expandIconPosition={"end"}
+          >
+            {modalFocus.notes.map((item, i) => (
+              <>
+                <Panel
+                  header={item.title === "" ? "Note" : item.title}
+                  key={i}
+                  // extra={genExtra()}
+                  style={{
+                    border: "#05fdc1 solid 2px",
+                    margin: 10,
+                    borderRadius: 20,
+                  }}
+                >
+                  <p>{item.content}</p>
+                </Panel>
+              </>
+            ))}
+          </Collapse>
         </Modal>
         <Calendar
           dateCellRender={dateCellRender}
