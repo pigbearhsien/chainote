@@ -50,14 +50,15 @@ const AppProvider = (props) => {
   // Set up local cache.
 
   useEffect(() => {
-    const cache = JSON.parse(localStorage.getItem("chain-note-local-cache"))
+    const cache = localStorage.getItem("chain-note-local-cache")
     if (cache !== null) {
-      setCacheNote(cache);
+      setCacheNote(JSON.parse(cache));
     }
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('chain-note-local-cache', cacheNote)
+    console.log('cache:', cacheNote)
+    localStorage.setItem('chain-note-local-cache', JSON.stringify(cacheNote))
   }, [cacheNote])
 
   return (
