@@ -12,15 +12,15 @@ const AppContext = createContext({
   recoveryPhrase: false,
   setRecoveryPhrase: () => {},
   cacheNote: {},
-  setCacheNote: () => {}
+  setCacheNote: () => {},
 });
 
 const AppProvider = (props) => {
   const [login, setLogin] = useState(false);
-  const [key, setKey] = useState("1")
-  const [content, setContent] = useState("")
-  const [signed, setSigned] = useState(false)
-  const [cacheNote, setCacheNote] = useState(new Object())
+  const [key, setKey] = useState("1");
+  const [content, setContent] = useState("");
+  const [signed, setSigned] = useState(false);
+  const [cacheNote, setCacheNote] = useState(new Object());
 
   const { database } = useContext(Web3Context);
 
@@ -32,7 +32,7 @@ const AppProvider = (props) => {
     if (status === "connected") {
       database.plugWeb3Provider(ethereum, () => setSigned(true));
     }
-  }, [ethereum]);
+  }, [ethereum, status]);
 
   // Set up recovery phrase.
 
@@ -50,16 +50,16 @@ const AppProvider = (props) => {
   // Set up local cache.
 
   useEffect(() => {
-    const cache = localStorage.getItem("chain-note-local-cache")
+    const cache = localStorage.getItem("chain-note-local-cache");
     if (cache !== null) {
       setCacheNote(JSON.parse(cache));
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    console.log('cache:', cacheNote)
-    localStorage.setItem('chain-note-local-cache', JSON.stringify(cacheNote))
-  }, [cacheNote])
+    console.log("cache:", cacheNote);
+    localStorage.setItem("chain-note-local-cache", JSON.stringify(cacheNote));
+  }, [cacheNote]);
 
   return (
     <AppContext.Provider
@@ -75,7 +75,7 @@ const AppProvider = (props) => {
         cacheNote,
         setCacheNote,
         key,
-        setKey
+        setKey,
       }}
       {...props}
     />
