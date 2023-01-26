@@ -11,6 +11,7 @@ import {
 import { useMetaMask } from "metamask-react";
 import * as ethers from "ethers";
 import { Web3Context } from "..";
+import { useNavigate } from "react-router-dom";
 
 const { Header, Content } = Layout;
 
@@ -36,6 +37,7 @@ const chain = {
 };
 
 function Settings({ setLogin }) {
+  const navigate = useNavigate();
   const { status, account } = useMetaMask();
   const { database, alchemy } = useContext(Web3Context);
 
@@ -118,8 +120,10 @@ function Settings({ setLogin }) {
     else if (status === "notConnected") {
       message.success({ content: "Logout successfully!", duration: 2 });
       setLogin(false);
+      navigate("/login");
     }
   };
+
   return (
     <Layout className="site-layout">
       <Content
@@ -176,7 +180,7 @@ function Settings({ setLogin }) {
               Fund
             </Button>
           </Space>
-          <div style={{ display: "flex", color: "white", marginLeft: '20px' }}>
+          <div style={{ display: "flex", color: "white", marginLeft: "20px" }}>
             Your bundlr balance: {balance}
           </div>
         </div>

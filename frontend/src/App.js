@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import Contacts from "./pages/Contacts";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { useApp } from "./UseApp";
 
@@ -24,7 +24,8 @@ export const AddNoteContext = createContext({
 });
 
 function App() {
-  const {login, setLogin, signed} = useApp();
+  const navigate = useNavigate();
+  const { login, setLogin, signed } = useApp();
 
   const [upload, setUpload] = useState({
     id: "",
@@ -33,6 +34,10 @@ function App() {
     noteDate: "",
     uploadTime: "",
   });
+
+  useEffect(() => {
+    navigate("/login");
+  }, []);
 
   if (login && signed) {
     return (
@@ -49,14 +54,21 @@ function App() {
             <Route path="/addNote" element={<AddNote />} />
             <Route path="/calendar" element={<CalendarView />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/settings"
+              element={<Settings setLogin={setLogin} />}
+            />
             <Route path="/contacts" element={<Contacts />} />
           </Routes>
         </Layout>
       </AddNoteContext.Provider>
     );
   } else {
-    return <Login/>;
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    );
   }
 }
 
