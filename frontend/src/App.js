@@ -1,4 +1,4 @@
-import React, { useContext, useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import "./index.css";
 import Login from "./pages/Login";
 import AddNote from "./pages/AddNote";
@@ -7,7 +7,8 @@ import CalendarView from "./pages/Calendar";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
-import { Route, Routes, useLocation } from "react-router-dom";
+import Contacts from "./pages/Contacts";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { useEffect } from "react";
 import { useMetaMask } from "metamask-react";
@@ -27,11 +28,8 @@ export const AddNoteContext = createContext({
 });
 
 function App() {
-  const [login, setLogin] = useState(false);
-  const [signed, setSigned] = useState(false);
-  const { status, ethereum } = useMetaMask();
-  const { database } = useContext(Web3Context);
-  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { login, setLogin, signed } = useApp();
 
   const [upload, setUpload] = useState({
     id: "",
@@ -42,10 +40,8 @@ function App() {
   });
 
   useEffect(() => {
-    if (status === "connected") {
-      database.plugWeb3Provider(ethereum, () => setSigned(true));
-    }
-  }, [ethereum]);
+    navigate("/login");
+  }, []);
 
   if (login && signed) {
     return (
@@ -64,13 +60,21 @@ function App() {
             <Route path="/addNote" element={<AddNote />} />
             <Route path="/calendar" element={<CalendarView />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/settings"
+              element={<Settings setLogin={setLogin} />}
+            />
+            <Route path="/contacts" element={<Contacts />} />
           </Routes>
         </Layout>
       </AddNoteContext.Provider>
     );
   } else {
-    return <Login login={login} setLogin={setLogin} signed={signed} />;
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    );
   }
 }
 
