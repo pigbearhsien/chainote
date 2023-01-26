@@ -1,55 +1,81 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { message } from "antd";
+import { useMetaMask } from "metamask-react";
+import { Web3Context } from ".";
 
 const AppContext = createContext({
-  status: {},
-  me: "",
-  signIn: false,
+  login: false,
+  setLogin: () => {},
+  content: "",
+  setContent: () => {},
+  signed: false,
+  setSigned: () => {},
+  recoveryPhrase: false,
+  setRecoveryPhrase: () => {},
+  cacheNote: {},
+  setCacheNote: () => {}
 });
 
 const AppProvider = (props) => {
-  const [status, setStatus] = useState([]);
-  const [signIn, setSignIn] = useState(false);
-  const [id, setId] = useState("");
-  const [me, setMe] = useState("");
-  const [key, setKey] = useState("1");
+  const [login, setLogin] = useState(false);
+  const [key, setKey] = useState("1")
+  const [content, setContent] = useState("")
+  const [signed, setSigned] = useState(false)
+  const [cacheNote, setCacheNote] = useState(new Object())
+
+  const { database } = useContext(Web3Context);
+
+  // Metamask connection and have it signed.
+
+  const { status, ethereum } = useMetaMask();
 
   useEffect(() => {
-    displayStatus(status);
-  }, [status]);
-
-  const displayStatus = (s) => {
-    if (s.msg) {
-      const { type, msg } = s;
-      const status = {
-        content: msg,
-        duration: 1,
-      };
-      switch (type) {
-        case "success":
-          message.success(status);
-          break;
-        case "error":
-        default:
-          message.error(status);
-          break;
-      }
+    if (status === "connected") {
+      database.plugWeb3Provider(ethereum, () => setSigned(true));
     }
-  };
+  }, [ethereum]);
+
+  // Set up recovery phrase.
+
+  const [recoveryPhrase, setRecoveryPhrase] = useState("");
+
+  useEffect(() => {
+    if (typeof recoveryPhrase === "object")
+      localStorage.setItem("mnemonicPhrase", JSON.stringify(recoveryPhrase));
+  }, [recoveryPhrase]);
+
+  useEffect(() => {
+    setRecoveryPhrase(JSON.parse(localStorage.getItem("mnemonicPhrase")));
+  }, []);
+
+  // Set up local cache.
+
+  useEffect(() => {
+    const cache = localStorage.getItem("chain-note-local-cache")
+    if (cache !== null) {
+      setCacheNote(JSON.parse(cache));
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('cache:', cacheNote)
+    localStorage.setItem('chain-note-local-cache', JSON.stringify(cacheNote))
+  }, [cacheNote])
 
   return (
     <AppContext.Provider
       value={{
-        me,
-        setMe,
-        id,
-        setId,
-        signIn,
-        setSignIn,
-        status,
-        setStatus,
+        login,
+        setLogin,
+        content,
+        setContent,
+        signed,
+        setSigned,
+        recoveryPhrase,
+        setRecoveryPhrase,
+        cacheNote,
+        setCacheNote,
         key,
-        setKey,
+        setKey
       }}
       {...props}
     />

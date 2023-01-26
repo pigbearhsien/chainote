@@ -10,9 +10,7 @@ import Notes from "./pages/Notes";
 import Contacts from "./pages/Contacts";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
-import { useEffect } from "react";
-import { useMetaMask } from "metamask-react";
-import { Web3Context } from ".";
+import { useApp } from "./UseApp";
 
 export const AddNoteContext = createContext({
   upload: {
@@ -23,8 +21,6 @@ export const AddNoteContext = createContext({
     uploadTime: "",
   },
   setUpload: () => {},
-  signed: false,
-  setSigned: () => {},
 });
 
 function App() {
@@ -49,8 +45,6 @@ function App() {
         value={{
           upload: upload,
           setUpload: setUpload,
-          signed: signed,
-          setSigned: setSigned,
         }}
       >
         <Layout>

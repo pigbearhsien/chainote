@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker, Space, Layout, Button, message, Input } from "antd";
+import { PlusOutlined, ArrowLeftOutlined, CheckOutlined} from '@ant-design/icons'
 import { Web3Context } from "..";
-import { AddNoteContext } from "../App";
+import { useMetaMask } from "metamask-react";
+import { useApp } from "../UseApp";
 
 dayjs.extend(customParseFormat);
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { TextArea } = Input;
 
 const disabledDate = (current) => {
@@ -15,27 +17,27 @@ const disabledDate = (current) => {
   return current > dayjs().endOf("day");
 };
 
-let ws;
-
 function AddNote() {
   const { database, alchemy } = useContext(Web3Context);
-  const { upload, setUpload, signed } = useContext(AddNoteContext);
+  const { content, setContent, cacheNote, setCacheNote, recoveryPhrase } = useApp()
+  const { ethereum, account} = useMetaMask()
 
   const [pickDate, setPickDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [content, setContent] = useState("");
   const [warning, setWarning] = useState(" ");
-
   const [proceed, setProceed] = useState(false);
+
+  const [mode, setMode] = useState("edit");
+  const [contacts, setContacts] = useState({
+    list: [],
+    chosen: []
+  })
+  const [_, setRerender] = useState(false)
 
   const onChange = (date, dateString) => {
     setPickDate(dateString);
   };
 
   const handleUpload = async () => {
-    if (signed === false) {
-      setWarning("Please click up Metamask and have our website signed! 🤖");
-      return;
-    }
     if (content === "") {
       setWarning("The content is empty. Do you sure you want to upload? 😲");
       // 從 Add 變成 Proceed，整個 button trigger 的 function 會是一個 call back
@@ -51,68 +53,67 @@ function AddNote() {
     }
     const encrypted = await database.encryptByPrivateKey(
       content,
-      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      recoveryPhrase,
     );
-    console.log("encrypted:", encrypted);
     const transaction = await database.uploadOntoChain(
       encrypted,
-      JSON.parse(localStorage.getItem("mnemonicPhrase"))
+      recoveryPhrase,
     );
     message.loading({
       content: "Pending...please wait for 2-5 minutes.",
       duration: 3,
     });
 
-    // setUpload({
-    //   id: transaction.id,
-    //   status: "pending",
-    //   content: content,
-    //   noteDate: pickDate,
-    //   uploadTime: dayjs().format("YYYY-MM-DDT HH:mm"),
-    // });
+    const idx =  transaction.id;
+    const date = pickDate.split("-").join("");
 
-    // await alchemy.uploadNote(
-    //   ethereum,
-    //   account,
-    //   pickDate.split("-").join(""),
-    //   transaction.id
-    // );
+    const newCache = Object.assign(new Object(), cacheNote)
+    newCache[idx] = {
+      date: date,
+      content: encrypted,
+    }
+    setCacheNote(newCache)
+
+    const shared = contacts.list.filter((_, index) => contacts.chosen[index] === true)
+
+    if (shared.length === 0) {
+      await alchemy.uploadNote(
+        ethereum,
+        account,
+        date,
+        idx,
+      );
+    } else {
+      await alchemy.uploadSharedNote(
+        ethereum,
+        [account, ...shared],
+        date,
+        idx,
+      );
+    }
   };
 
-  useEffect(() => {
-    // console.log("!", upload);
-    if (upload.status === "pending") {
-      clearInterval(ws);
-      ws = setInterval(() => {
-        database.pollStatus(upload.id).then((response) => {
-          // console.log(response);
-          // console.log(response.status === 200);
-          if (response.status === 200) {
-            setUpload({
-              ...upload,
-              status: "complete",
-            });
-          }
-          // 200: ok! 202: pending
-        });
-      }, 10000);
-    } else if (upload.status === "complete") {
-      message.success({ content: "This note is on chain now!", duration: 2 });
-      clearInterval(ws);
-      setUpload({
-        ...upload,
-        status: "",
-      });
-    }
-  }, [upload]);
+  const choose = (index) => {
+    const origin = contacts.chosen
+    origin[index] = !origin[index]
+    setContacts({
+      list: contacts.list,
+      chosen: origin,
+    })
+    setRerender(prev => !prev)
+  }
 
   useEffect(() => {
-    if (upload.status === "pending")
-      message.loading({
-        content: "Pending...please wait for 2-5 minutes.",
-        duration: 3,
-      });
-  }, []);
+    const resolved = JSON.parse(localStorage.getItem("chain-note-contacts"))
+    if(resolved === null) {
+      localStorage.setItem('chain-note-contacts', JSON.stringify([]));
+      return;
+    }
+    setContacts({
+      list: resolved,
+      chosen: new Array(resolved.length).fill(false)
+    })
+  }, [])
 
   return (
     <Layout className="site-layout">
@@ -120,6 +121,8 @@ function AddNote() {
         className="site-layout-background"
         style={{
           // margin: '24px 16px',
+          display: 'flex',
+          flexDirection: 'column',
           padding: 24,
           paddingTop: 40,
           minHeight: 280,
@@ -130,77 +133,94 @@ function AddNote() {
           //   filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2))",
         }}
       >
-        <h1>Add Note</h1>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <h2 style={{ marginBottom: 0 }}>
-            {pickDate === dayjs().format("YYYY-MM-DD")
-              ? "Today"
-              : `${pickDate}`}
-          </h2>
-          <div className="pickDate" style={{}}>
-            <Space direction="vertical">
-              <DatePicker
-                format="YYYY-MM-DD"
-                disabledDate={disabledDate}
-                allowClear={false}
-                showToday={true}
-                onChange={onChange}
-              />
-            </Space>
+        <div style={{display: 'flex', alignItems: 'center', position: 'relative'}}>
+          {mode !== 'edit' ? <Button onClick={() => setMode('edit')} style={{backgroundColor: 'black', position: 'absolute', border: '0', left: '10px'}} icon={<ArrowLeftOutlined style={{color: 'white', fontSize: '20px'}} />} />: <></>} 
+          <div style={{color: 'white', fontSize: '28px', width: '100%', textAlign: 'center'}}>Add Note</div>
+          {mode === 'edit' ? <Button onClick={() => setMode('add')} style={{backgroundColor: 'black', position: 'absolute', border: '0', left: '90%'}} icon={<PlusOutlined style={{color: 'white', fontSize: '20px'}} />} />: <></>}
+        </div>
+        { mode === 'edit' ? 
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              marginTop: 30,
+            }}
+          >
+            <h2 style={{ marginBottom: 0 }}>
+              {pickDate === dayjs().format("YYYY-MM-DD")
+                ? "Today"
+                : `${pickDate}`}
+            </h2>
+            <div className="pickDate" style={{}}>
+              <Space direction="vertical">
+                <DatePicker
+                  format="YYYY-MM-DD"
+                  disabledDate={disabledDate}
+                  allowClear={false}
+                  showToday={true}
+                  onChange={onChange}
+                />
+              </Space>
+            </div>
           </div>
-        </div>
-
-        <TextArea
-          style={{
-            backgroundColor: "black",
-            color: "white",
-            borderColor: "white",
-            fontSize: "18px",
-            fontFamily: "Iceberg",
-            height: "60%",
-            // boxShadow: "0 0 0 2px #828384",
-          }}
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-          }}
-        />
-        <div
-          style={{ display: "flex", color: "white", margin: "10px 0 10px 0" }}
-        >
-          {warning}
-        </div>
-        {proceed ? (
+          <TextArea
+            style={{
+              backgroundColor: "black",
+              color: "white",
+              borderColor: "white",
+              fontSize: "18px",
+              fontFamily: "Iceberg",
+              height: "60%",
+              // boxShadow: "0 0 0 2px #828384",
+            }}
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value);
+            }}
+          />
+          <div
+            style={{ display: "flex", color: "white", margin: "10px 0 10px 0", height: '20px' }}
+          >
+            {warning}
+          </div>
           <Button
             style={{
               borderRadius: "50px",
               marginTop: "15",
               width: "100%",
             }}
-            onClick={() => _upload()}
+            onClick={() => proceed ? _upload(): handleUpload()}
           >
-            Proceed
+            {proceed ? "Proceed" : "Add"}
           </Button>
-        ) : (
-          <Button
-            style={{
-              borderRadius: "50px",
-              marginTop: "15",
-              width: "100%",
-            }}
-            disabled={upload.status === "pending"}
-            onClick={() => handleUpload()}
-          >
-            {upload.status === "pending" ? "Uploading..." : "Add"}
-          </Button>
-        )}
+          <div style={{color: 'white', marginTop: '15px'}}>
+            {"<Also send to: " + 
+              contacts.list.map((item, index) => {
+                if (contacts.chosen[index] === true) {
+                  return item.name + " ";
+                }
+              }) +
+            ">"}
+          </div>
+        </> :
+        <>
+          {contacts.list.map((item, index) => {
+            return (
+              <Button onClick={() => choose(index)} style={{width: '97%', height: 'fit-content', backgroundColor: 'black', color: contacts.chosen[index]? '#3871e0': 'white', margin: "20px 0 0 0", border: contacts.chosen[index] ? "1px solid #3871e0" : "1px solid white", padding: '8px 20px 8px 20px'}}>
+                <div style={{display: 'flex', fontSize: '25px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
+                  {item.name}
+                  <CheckOutlined />
+                </div>
+                <div>
+                  {item.pk}
+                </div>
+              </Button>
+            )
+          })}
+        </>}
       </Content>
     </Layout>
   );

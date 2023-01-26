@@ -9,6 +9,7 @@ import AlchemyInterface from "./wallet/alchemy";
 import { abi, contract_addr } from "./contract/contract";
 // import AlchemyInterface from "./wallet/alchemy";
 
+console.log(abi);
 const database = new DatabaseInterface();
 const alchemy = new AlchemyInterface(contract_addr, abi);
 
@@ -24,13 +25,13 @@ export const Web3Context = createContext({
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Web3Context.Provider value={{ database: database, alchemy: alchemy }}>
-    <MetaMaskProvider>
-      <AppProvider>
-        <Router>
-          <App />
-        </Router>
-      </AppProvider>
-    </MetaMaskProvider>
-  </Web3Context.Provider>
+    <Web3Context.Provider value={{ database: database, alchemy: alchemy }}>
+      <MetaMaskProvider>
+        <AppProvider>
+          <Router> 
+            <App />
+          </Router>
+          </AppProvider>
+      </MetaMaskProvider>
+    </Web3Context.Provider>
 );

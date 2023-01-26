@@ -1,5 +1,5 @@
 import _abi from "./abi.json";
 
-export const contract_addr = "0x45dFFf343C2aFC767d8f7bd324068a67471E9aa3";
+export const contract_addr = "0x1a374f0B137e47b1fF76a53232E2B83BfCA9c0FA";
 
 export const abi = _abi;

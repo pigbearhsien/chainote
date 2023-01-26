@@ -4,17 +4,19 @@ import * as ethers from "ethers";
 class AlchemyInterface {
   constructor(solidity_sc, abid) {
     const settings = {
-      apiKey: "gX8oD6a1FQzKHWOHC5CYpAjpRhajTcrE",
-      network: Network.ETH_GOERLI,
+      apiKey: "LjJCSTlwcAXibugbEPYq1QUW1e9qjFj7",
+      network: Network.MATIC_MUMBAI,
     };
 
     this.alchemy = new Alchemy(settings);
     this.smartContract = solidity_sc;
 
-    console.log(abid.output.abi);
-
     this.interface = new ethers.utils.Interface(abid.output.abi);
   }
+
+  getBalance = async (address) => {
+    return await this.alchemy.core.getBalance(address);
+  };
 
   dateToNotes = async (ethereum, from, date) => {
     const params = {
@@ -71,6 +73,37 @@ class AlchemyInterface {
     });
   };
 
+  getName = async (ethereum, from) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("getName", []),
+    };
+    const encoded_result = await ethereum.request({
+      method: "eth_call",
+      params: [params],
+    });
+
+    const name = this.interface.decodeFunctionResult(
+      this.interface.functions["getName()"],
+      encoded_result
+    );
+
+    return name;
+  };
+
+  setName = async (ethereum, from, newName) => {
+    const params = {
+      from: from,
+      to: this.smartContract,
+      data: this.interface.encodeFunctionData("setName", [newName]),
+    };
+    return await ethereum.request({
+      method: "eth_sendTransaction",
+      params: [params],
+    });
+  };
+
   listenOnTransactionPending = (who) => {
     const ws = this.alchemy.ws.on(
       {
@@ -87,6 +120,7 @@ class AlchemyInterface {
   listenOnTransactionMined = (txHash) => {
     this.alchemy.ws.on(txHash, (tx) => console.log(tx));
   };
+  
 }
 
 export default AlchemyInterface;

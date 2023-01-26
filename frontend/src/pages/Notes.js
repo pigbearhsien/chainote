@@ -1,81 +1,115 @@
 import React, { useContext } from "react";
 import { useMetaMask } from "metamask-react";
 import { Layout, Button, Card, Divider } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import { AddNoteContext } from "../App";
 import { Web3Context } from "..";
+import { useApp } from "../UseApp";
 // import * as ethers from "ethers";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
-function Notes({ login, setLogin }) {
+function Notes() {
   const { database, alchemy } = useContext(Web3Context);
   const { upload } = useContext(AddNoteContext);
 
-  const { status, connect, account, chainId, ethereum } = useMetaMask();
-  const [content, setContent] = useState();
-  // console.log(arweave.mnemonicPhrase);
+  const { account, ethereum } = useMetaMask();
+  const { cacheNote, setCacheNote, recoveryPhrase } = useApp();
 
-  const [showNote, setShowNote] = useState([]);
+  const [showNote, setShowNote] = useState({});
+  const [noteList, setNoteList] = useState([])
 
-  const getNote_arweave = async (date, txId) => {
-    const transaction = await database.arweave.transactions.getData(txId);
+  const [status, setStatus] = useState({
+    active: false,
+    done: 0,
+    total: 1,
+  })
+
+  const getNote_bundlr = async (date, txId) => {
+    const transaction = await database.getData(txId)
+    const _date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`
+
+    // console.log('handling:', txId)
+    let resolved; 
     if (transaction) {
       const decrypted = await database.decryptByPrivateKey(
         transaction,
-        JSON.parse(localStorage.getItem("mnemonicPhrase"))
+        recoveryPhrase
       );
-      setShowNote((prev) => [
-        ...prev,
-        [`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`, decrypted],
-      ]);
+      resolved = [_date, decrypted]
     } else {
-      setShowNote((prev) => [
-        ...prev,
-        [
-          `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)}`,
-          "<Now pending...>",
-        ],
-      ]);
+      resolved = [_date, "<Now pending...>"]
     }
+    setStatus((prev) => (
+      {...prev, done: prev.done + 1}
+    ))
+    setShowNote((prev) => {
+      const _new = Object.assign(new Object(), prev)
+      _new[txId] = resolved
+      return _new
+    })
+  };
+
+  const getNotes = async () => {
+    const encodedResult = await alchemy.getNotes(ethereum, account, 20)
+    const localCache = Object.assign(new Object(), cacheNote)
+
+    const arr = alchemy.interface.decodeFunctionResult(
+      alchemy.interface.functions["getNotes(uint256)"],
+      encodedResult
+    );
+
+    setStatus({
+      active: true,
+      done: 0,
+      total: arr.length
+    })
+
+    arr.map(element => (
+      element.map(item => {
+        // 有找到 txId (item[1]) 的從 local cache 中 pop 掉
+        getNote_bundlr(item[0], item[1])
+        delete localCache[item[1]];
+      })
+    ));
+
+    const keys = Object.keys(localCache)
+    keys.map(item => {
+      getNote_bundlr(localCache[item].date, item);
+    })
+    // should look up on txId to see if there is cache.
+    setCacheNote(localCache);
   };
 
   useEffect(() => {
-    // console.log(showNote[0][0]);
-    let sortNote = Array.from(
-      showNote.sort((a, b) => new Date(b[0]) - new Date(a[0]))
+    const _noteList = []
+    for(const key in showNote) {
+      _noteList.push(showNote[key])
+    }
+    const sortedNote = Array.from(
+      _noteList.sort((a, b) => new Date(b[0]) - new Date(a[0]))
     );
-    console.log("sorted", sortNote);
-    setShowNote(() => sortNote);
-  }, [showNote.length]);
+    setNoteList(sortedNote);
+  }, [showNote])
 
-  const getNotes = async () => {
-    console.log("handling...");
-    await alchemy.getNotes(ethereum, account, 20).then((encodedResult) => {
-      console.log(encodedResult);
-      const arr = alchemy.interface.decodeFunctionResult(
-        alchemy.interface.functions["getNotes(uint256)"],
-        encodedResult
-      );
-      console.log(arr);
-      arr.map((element) => {
-        element.map((item) => {
-          getNote_arweave(item[0], item[1]);
-        });
-      });
-    });
-  };
-
-  // useEffect(() => {
-  // console.log(content);
-  // }, [content]);
-
+  useEffect(() => {
+    if(status.done >= status.total) {
+      setStatus({
+        done: 0,
+        total: 1,
+        active: false,
+      })
+    }
+  }, [status])
+  
   return (
     <Layout className="site-layout">
       <Content
         className="site-layout-background"
         style={{
           // margin: '24px 16px',
+          position: 'relative',
           padding: 24,
           paddingTop: 40,
           minHeight: 280,
@@ -86,7 +120,26 @@ function Notes({ login, setLogin }) {
           //   filter: "drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2))",
         }}
       >
-        <h1>Notes</h1>
+        <div style={{display: 'flex', alignItems: 'center', position: 'relative'}}>
+          <div style={{color: 'white', fontSize: '30px', width: '100%', textAlign: 'center'}}>Notes</div>
+          { status.active ?
+            <div style={{position: 'absolute', color: 'white', marginLeft: '350px', marginTop: '15px'}}>{"(Loading...)"}</div> :
+            <></>
+          }
+        </div>
+        <Button
+          style={{
+            borderRadius: "50px",
+            marginTop: "5%",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={getNotes}
+        >
+          Fetch Notes
+        </Button>
         {upload.status === "pending" ? (
           <>
             <Divider
@@ -120,7 +173,7 @@ function Notes({ login, setLogin }) {
           Latest 20 notes
         </Divider>
         <div className="site-card-border-less-wrapper">
-          {showNote.map(([date, note], i) => {
+          {noteList.map(([date, note], i) => {
             // console.log(note);
             return (
               <Card
@@ -134,19 +187,6 @@ function Notes({ login, setLogin }) {
             );
           })}
         </div>
-        <Button
-          style={{
-            borderRadius: "50px",
-            marginTop: "5%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={getNotes}
-        >
-          Fetch Notes
-        </Button>
       </Content>
     </Layout>
   );

@@ -3,7 +3,7 @@ html {
   margin: 0;
   padding: 0;
   font-family: "Iceberg";
-  font-size: 18px;
+  /* font-size: 50px; */
 }
 
 ::-webkit-scrollbar {
@@ -219,7 +219,6 @@ a {
 }
 .viewButton {
   margin-left: 3px;
-
   margin-right: 3px;
   margin-top: 3px;
   width: 50px;
@@ -228,3 +227,102 @@ a {
   justify-content: center;
   align-items: center;
 }
+
+/* :where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-radio-button-wrapper-checked:not(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-radio-button-wrapper-disabled
+  ):first-child {
+  border-color: #05fdc1;
+  color: #03d6a1;
+}
+
+:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+.ant-select-focused:where(.css-dev-only-do-not-override-k83k30).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
+  border-color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-radio-button-wrapper-checked:not(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-radio-button-wrapper-disabled
+  )::before {
+  border-color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-in-view:is(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-picker-calendar.ant-picker-calendar-full
+      .ant-picker-cell-selected
+  )
+  .ant-picker-calendar-date,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-in-view:is(
+    :where(
+        .css-dev-only-do-not-override-k83k30
+      ).ant-picker-calendar.ant-picker-calendar-full
+      .ant-picker-cell-selected
+  )
+  .ant-picker-calendar-date-today {
+  background-color: #ddfef5e0;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected
+  .ant-picker-calendar-date
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected:hover
+  .ant-picker-calendar-date
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected
+  .ant-picker-calendar-date-today
+  .ant-picker-calendar-date-value,
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-cell-selected:hover
+  .ant-picker-calendar-date-today
+  .ant-picker-calendar-date-value {
+  color: #05fdc1;
+}
+
+:where(
+    .css-dev-only-do-not-override-k83k30
+  ).ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-today {
+  border-color: #05fdc1;
+} */

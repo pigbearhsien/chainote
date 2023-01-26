@@ -1,11 +1,40 @@
-import React from "react";
-import { Layout } from "antd";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  Layout,
+  message,
+  Button,
+  Divider,
+  Radio,
+  InputNumber,
+  Space,
+} from "antd";
 import { useMetaMask } from "metamask-react";
 import * as ethers from "ethers";
 import { Web3Context } from "..";
 import { useNavigate } from "react-router-dom";
 
 const { Header, Content } = Layout;
+
+const chain = {
+  5: {
+    chainName: "Georli Testnet",
+    chainId: 5,
+    nativeCurrency: { name: "GoerliETH", decimals: 18, symbol: "GoerliETH" },
+    rpcUrls: ["https://goerli.infura.io/v3/"],
+  },
+  80001: {
+    chainName: "Mumbai Testnet",
+    chainId: 80001,
+    nativeCurrency: { name: "MATIC", decimals: 18, symbol: "MATIC" },
+    rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+  },
+  137: {
+    chainName: "Polygon Mainnet",
+    chainId: 137,
+    nativeCurrency: { name: "MATIC", decimals: 18, symbol: "MATIC" },
+    rpcUrls: ["https://polygon-rpc.com/"],
+  },
+};
 
 function Settings({ setLogin }) {
   const navigate = useNavigate();
