@@ -12,7 +12,7 @@
 
 ## **Introduction**
 
-Chain Note is a diary app that enables users to write diary entries and store them on the blockchain, ensuring they're never lost.
+ChainNote is a diary app that enables users to write diary entries and store them on the blockchain, ensuring they're never lost.
 
 ## Demo
 
