@@ -12,7 +12,7 @@
 
 ## **Introduction**
 
-Chain Note is a privacy-focused diary app that securely uploads entries to the blockchain, ensuring they're never lost.
+Chain Note is a diary app that enables users to write diary entries and store them on the blockchain, ensuring they're never lost.
 
 ## Demo
 
@@ -20,8 +20,8 @@ Chain Note is a privacy-focused diary app that securely uploads entries to the b
 
 ## Features
 
-1. **Permanent**: Safeguard user diaries permanently using blockchain technology, preventing any accidental data loss.
-2. **Private**: Utilize private keys as a secure channel for storing diaries, ensuring user privacy is protected from potential breaches.
+1. **Permanent**: User's diaries are securely uploaded to the blockchain, preventing any accidental data loss.
+2. **Private**: Users can access their diaries by entering their private key, ensuring their privacy is protected.
 
 ## Tech Stack
 
