@@ -1,28 +1,39 @@
-# ChainNoteWeb
+![image](https://github.com/pigbearhsien/chainote/blob/main/frontend/src/assets/screenshot.png)
 
-run in docker:
-```bash=
-# build a docker image
-docker build -t chain-note-web .
+<h1 align="center">ChainNote</h1>
+<p align="center">
+  <a href="#introduction"><strong>Introduction</strong></a> ·
+  <a href="#demo"><strong>Demo</strong></a> ·
+  <a href="#features"><strong>Features</strong></a> ·
+  <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
+  <a href="#contact-me"><strong>Contact Me</strong></a> 
+</p>
+<br/>
 
-# run on docker locally
-docker run --rm --name chain-note-web -d -p 3000:3000 chain-note-web
-```
+## **Introduction**
 
-when docker says that, the port 3000 is already in use:
-```bash=
-docker stop chain-note-web
+Chain Note is a privacy-focused diary app that securely uploads entries to the blockchain, ensuring they're never lost.
 
-lsof -i:3000
-kill [the process pid]
-```
-and then restart again.
+## Demo
 
-push to docker hub:
-```bash=
-docker tag chain-note-web <username>/chain-note-web:<version>
-docker push <username>/chain-note-web:<version>
-```
+[ChainNote Demo Video](https://drive.google.com/file/d/1WbC8-zUv3r_r45dZbuANL8wXkHxrWKVs/view)
 
-scutil --dns | grep 'nameserver\[[0-9]*\]'
-scutil: system configuration utility
+## Features
+
+1. **Permanent**: Safeguard user diaries permanently using blockchain technology, preventing any accidental data loss.
+2. **Private**: Utilize private keys as a secure channel for storing diaries, ensuring user privacy is protected from potential breaches.
+
+## Tech Stack
+
+ChainNote is built on the following stack:
+
+- [React](https://react.dev/) - framework
+- [Ant Design](https://ant.design/) - components
+- [Arweave](https://www.arweave.org/) - storage
+- [Solidity](https://soliditylang.org/) - smart contract language
+- [Polygon](https://polygon.technology/) - blockchain
+
+## Contact Me
+
+- Email: sally920611@gmail.com
+- Facebook: [https://www.facebook.com/hsieh.sally.7/](https://www.facebook.com/hsieh.sally.7/)
