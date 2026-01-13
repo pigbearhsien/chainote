@@ -16,7 +16,7 @@ ChainNote is a diary app that enables users to write diary entries and store the
 
 ## Demo
 
-[ChainNote Demo Video](https://drive.google.com/file/d/1WbC8-zUv3r_r45dZbuANL8wXkHxrWKVs/view)
+[ChainNote Demo Video](https://youtu.be/GiawH5yeAWo)
 
 ## Features
 
